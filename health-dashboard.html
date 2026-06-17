@@ -78,6 +78,7 @@
             border-radius: 12px;
             padding: 1.25rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-height: 180px;
         }
 
         .card-header {
@@ -142,18 +143,11 @@
             grid-column: span 2;
         }
 
-        .donut-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-
         .donut-chart {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
         }
 
         .donut-center {
@@ -456,14 +450,16 @@
                 </div>
                 <div class="metric-value">2.8M</div>
                 <div class="metric-label">Records Processed</div>
-                <canvas id="volumeChart" style="margin-top: 0.5rem; height: 60px;"></canvas>
+                <div style="height: 60px; margin-top: 0.5rem;">
+                    <canvas id="volumeChart"></canvas>
+                </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">⚡ Pipeline Status</div>
                 </div>
-                <div class="donut-container">
+                <div style="margin-top: 1rem;">
                     <div class="donut-chart">
                         <canvas id="statusDonut"></canvas>
                         <div class="donut-center">
@@ -643,10 +639,21 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
                     scales: {
-                        y: { display: false },
+                        y: {
+                            display: false,
+                            beginAtZero: true
+                        },
                         x: { display: false }
+                    },
+                    elements: {
+                        line: {
+                            borderWidth: 2
+                        }
                     }
                 }
             });
