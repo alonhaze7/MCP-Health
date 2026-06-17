@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slack Pipeline Health Insights</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Slack-Lato', 'Helvetica Neue', Helvetica, 'Segoe UI', sans-serif;
+            background: #f8f8f8;
+            color: #1d1c1d;
+        }
+
+        .header {
+            background: #4A154B;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        .chat-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #2bac76;
+            border-radius: 50%;
+        }
+
+        .messages {
+            padding: 1.5rem;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .bot-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .bot-name {
+            font-weight: 900;
+            font-size: 0.9rem;
+        }
+
+        .bot-badge {
+            background: #e8e8e8;
+            color: #616061;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .timestamp {
+            color: #616061;
+            font-size: 0.75rem;
+        }
+
+        .card {
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #2bac76;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f8f8f8;
+            margin-top: 0.5rem;
+        }
+
+        .card.warning {
+            border-left-color: #ecb22e;
+        }
+
+        .card.critical {
+            border-left-color: #e01e5a;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .health-score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ecb22e;
+            margin: 1rem 0;
+        }
+
+        .status-row {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .metric {
+            margin: 0.75rem 0;
+        }
+
+        .metric-label {
+            color: #616061;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .history {
+            display: flex;
+            gap: 2px;
+            margin: 0.5rem 0;
+        }
+
+        .history-day {
+            width: 20px;
+            height: 20px;
+            border-radius: 2px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #f8f8f8;
+            border-color: #2bac76;
+        }
+
+        .btn-primary {
+            background: #2bac76;
+            color: white;
+            border-color: #2bac76;
+        }
+
+        .btn-primary:hover {
+            background: #1e8e5e;
+        }
+
+        .btn-danger {
+            background: #e01e5a;
+            color: white;
+            border-color: #e01e5a;
+        }
+
+        .btn-danger:hover {
+            background: #c01048;
+        }
+
+        .error-code {
+            background: #ffe5e5;
+            color: #c01048;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin: 0.25rem 0;
+        }
+
+        .ai-suggestion {
+            font-style: italic;
+            color: #616061;
+            font-size: 0.85rem;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .sidebar h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .health-gauge {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 1.5rem auto;
+        }
+
+        .gauge-bg {
+            stroke: #e0e0e0;
+        }
+
+        .gauge-fill {
+            stroke: #ecb22e;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .gauge-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .gauge-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ecb22e;
+        }
+
+        .gauge-label {
+            font-size: 0.85rem;
+            color: #616061;
+        }
+
+        .pipeline-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .pipeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .pipeline-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pipeline-status {
+            font-size: 0.85rem;
+            color: #616061;
+        }
+
+        .expandable {
+            margin: 1rem 0;
+        }
+
+        .expandable-header {
+            cursor: pointer;
+            padding: 0.75rem;
+            background: #f8f8f8;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .expandable-content.open {
+            max-height: 500px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 #data-pipeline-health</h1>
+        <a href="index.html" class="back-btn">← Back to Hub</a>
+    </div>
+
+    <div class="container">
+        <div class="chat-section">
+            <div class="chat-header">
+                <span class="status-dot"></span>
+                <h2>MCI Pipeline Agent</h2>
+                <span class="bot-badge">APP</span>
+            </div>
+
+            <div class="messages" id="messages">
+                <!-- Messages will be dynamically added here -->
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <h3>📈 Dashboard Overview</h3>
+
+            <div class="health-gauge">
+                <svg width="150" height="150">
+                    <circle cx="75" cy="75" r="60" fill="none" stroke-width="12" class="gauge-bg"/>
+                    <circle cx="75" cy="75" r="60" fill="none" stroke-width="12" class="gauge-fill"
+                            stroke-dasharray="377" stroke-dashoffset="113"
+                            transform="rotate(-90 75 75)"/>
+                </svg>
+                <div class="gauge-text">
+                    <div class="gauge-score">72</div>
+                    <div class="gauge-label">Fair</div>
+                </div>
+            </div>
+
+            <div class="expandable">
+                <div class="expandable-header" onclick="toggleSection('failed')">
+                    <span>🔴 Failed Pipelines (3)</span>
+                    <span>▼</span>
+                </div>
+                <div class="expandable-content open" id="failed">
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">Google Ads APAC</div>
+                        <div class="pipeline-status">Token expired</div>
+                        <div class="history">
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                        </div>
+                    </div>
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">Meta EMEA</div>
+                        <div class="pipeline-status">Rate limit exceeded</div>
+                        <div class="history">
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #ecb22e"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                        </div>
+                    </div>
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">LinkedIn US</div>
+                        <div class="pipeline-status">API deprecated</div>
+                        <div class="history">
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #2bac76"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                            <div class="history-day" style="background: #e01e5a"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="expandable">
+                <div class="expandable-header" onclick="toggleSection('warnings')">
+                    <span>🟡 Warnings (2)</span>
+                    <span>▼</span>
+                </div>
+                <div class="expandable-content" id="warnings">
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">TikTok US</div>
+                        <div class="pipeline-status">Token expires in 2 days</div>
+                    </div>
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">Google Ads US</div>
+                        <div class="pipeline-status">Token expires in 5 days</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="expandable">
+                <div class="expandable-header" onclick="toggleSection('healthy')">
+                    <span>🟢 Healthy (12)</span>
+                    <span>▼</span>
+                </div>
+                <div class="expandable-content" id="healthy">
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">Meta US</div>
+                        <div class="pipeline-status">98.7% uptime</div>
+                    </div>
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">Google Ads EMEA</div>
+                        <div class="pipeline-status">100% uptime</div>
+                    </div>
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">TikTok EMEA</div>
+                        <div class="pipeline-status">99.2% uptime</div>
+                    </div>
+                    <div class="pipeline-item">
+                        <div class="pipeline-name">+ 9 more</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const messages = [
+            {
+                type: 'summary',
+                time: '8:00 AM',
+                content: {
+                    title: 'Good Morning! 🌅 Daily Pipeline Health Summary',
+                    score: 72,
+                    status: 'Fair',
+                    statusCounts: '🟢 12 healthy   🔴 3 failed   🟡 2 warnings',
+                    tokenExpiry: '⏰ 2 tokens expiring in <3 days (🚨 urgent)',
+                    topFailures: [
+                        'AUTH_TOKEN_EXPIRED (2 pipelines)',
+                        'RATE_LIMIT_EXCEEDED (1 pipeline)',
+                        'API_VERSION_DEPRECATED (1 pipeline)'
+                    ],
+                    recordsAffected: '245,680 records affected (all recoverable via backfill)'
+                }
+            },
+            {
+                type: 'alert',
+                time: '8:01 AM',
+                pipeline: 'Google Ads APAC',
+                workspace: 'ws-apac',
+                status: 'FAILED',
+                severity: 'critical',
+                records: '0 / 142,840 loaded',
+                history: [true, true, true, true, false, false, false],
+                error: 'AUTH_TOKEN_EXPIRED',
+                errorDetail: 'OAuth2 token expired on June 15, 2026. No data synced for 3 days.',
+                suggestion: 'Re-authenticate immediately. All 142,840 records can be backfilled once auth is restored.',
+                actions: ['Re-authenticate Now', 'View Logs', 'Ask AI', 'Snooze 1h']
+            },
+            {
+                type: 'alert',
+                time: '8:01 AM',
+                pipeline: 'Meta EMEA',
+                workspace: 'ws-emea',
+                status: 'FAILED',
+                severity: 'critical',
+                records: '4,520 / 87,200 loaded',
+                history: [true, true, true, false, false, false, false],
+                error: 'RATE_LIMIT_EXCEEDED',
+                errorDetail: 'Meta API rate limit (200 calls/hour) exceeded. Retry-After: 42 minutes.',
+                suggestion: 'Enable exponential backoff with jitter. Auto-repair can implement adaptive rate limiting.',
+                actions: ['Auto-Repair', 'View Logs', 'Ask AI', 'Snooze 1h']
+            },
+            {
+                type: 'alert',
+                time: '8:02 AM',
+                pipeline: 'LinkedIn US',
+                workspace: 'ws-us',
+                status: 'FAILED',
+                severity: 'critical',
+                records: '0 / 15,640 loaded',
+                history: [true, true, true, true, true, false, false],
+                error: 'API_VERSION_DEPRECATED',
+                errorDetail: 'LinkedIn API v2.0 deprecated. Endpoints return 410 Gone. Migration to v3.0 required.',
+                suggestion: 'Update API version and field mappings: member_id → memberId, firstName → localizedFirstName',
+                actions: ['View Migration Guide', 'View Logs', 'Ask AI']
+            },
+            {
+                type: 'conversation',
+                time: '8:15 AM',
+                user: 'Sarah Chen',
+                userMessage: '@MCI Pipeline Agent what\'s the total impact of today\'s failures?',
+                botResponse: {
+                    text: 'Today\'s failures affected **245,680 records** across 3 pipelines:',
+                    breakdown: [
+                        '• Google Ads APAC: 142,840 records (100% missing)',
+                        '• Meta EMEA: 82,680 records (95% missing)',
+                        '• LinkedIn US: 15,640 records (100% missing)'
+                    ],
+                    recovery: 'All can be fully recovered via reprocess once underlying issues are resolved.',
+                    eta: 'Estimated recovery time: 2-4 hours after fixes are applied.'
+                }
+            }
+        ];
+
+        function createSummaryCard(data) {
+            return `
+                <div class="card">
+                    <div class="card-title">
+                        ${data.title}
+                    </div>
+                    <div class="health-score">${data.score}/100 — ${data.status}</div>
+                    <div class="status-row">${data.statusCounts}</div>
+                    <div class="metric">
+                        <div class="metric-label">Token Status</div>
+                        <div class="metric-value">${data.tokenExpiry}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Top Failure Reasons</div>
+                        ${data.topFailures.map(f => `<div class="metric-value">• ${f}</div>`).join('')}
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Impact</div>
+                        <div class="metric-value">${data.recordsAffected}</div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-primary" onclick="showModal('Full report shown in dashboard →')">Full Report</button>
+                        <button class="btn btn-danger" onclick="showRepairModal()">Repair All Failed</button>
+                        <button class="btn" onclick="showModal('AI assistant activated')">Ask AI</button>
+                        <button class="btn" onclick="showModal('Dashboard refreshed ✓')">Refresh</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createAlertCard(data) {
+            const historyHtml = data.history.map(h =>
+                `<div class="history-day" style="background: ${h ? '#2bac76' : '#e01e5a'}"></div>`
+            ).join('');
+
+            return `
+                <div class="card ${data.severity}">
+                    <div class="card-title">
+                        🔴 ${data.pipeline} — ${data.status}
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Workspace</div>
+                        <div class="metric-value">${data.workspace}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Records Loaded</div>
+                        <div class="metric-value">${data.records}</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">7-day History</div>
+                        <div class="history">${historyHtml}</div>
+                    </div>
+                    <div class="error-code">${data.error}</div>
+                    <p style="margin: 0.5rem 0; font-size: 0.9rem;">${data.errorDetail}</p>
+                    <div class="ai-suggestion">💡 ${data.suggestion}</div>
+                    <div class="actions">
+                        ${data.actions.map(action => {
+                            const isPrimary = action.includes('Re-authenticate') || action.includes('Auto-Repair');
+                            return `<button class="btn ${isPrimary ? 'btn-primary' : ''}"
+                                           onclick="handleAction('${action}', '${data.pipeline}')">${action}</button>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createConversationMessage(data) {
+            return `
+                <div style="margin: 1rem 0;">
+                    <div class="message-header">
+                        <div class="bot-avatar" style="background: #e8e8e8; color: #1d1c1d;">SC</div>
+                        <span class="bot-name">${data.user}</span>
+                        <span class="timestamp">${data.time}</span>
+                    </div>
+                    <div style="margin-left: 46px;">
+                        ${data.userMessage}
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.9rem;">
+                        ${data.botResponse.text}
+                        ${data.botResponse.breakdown.map(b => `<div style="margin: 0.5rem 0;">${b}</div>`).join('')}
+                        <div style="margin-top: 1rem; font-weight: 600;">Recovery Status:</div>
+                        <div>${data.botResponse.recovery}</div>
+                        <div style="margin-top: 0.5rem; color: #2bac76; font-weight: 600;">${data.botResponse.eta}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMessage(msg, index) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.style.animationDelay = `${index * 0.2}s`;
+
+            const header = `
+                <div class="message-header">
+                    <div class="bot-avatar">🤖</div>
+                    <span class="bot-name">MCI Pipeline Agent</span>
+                    <span class="bot-badge">APP</span>
+                    <span class="timestamp">${msg.time}</span>
+                </div>
+            `;
+
+            let content = '';
+            if (msg.type === 'summary') {
+                content = createSummaryCard(msg.content);
+            } else if (msg.type === 'alert') {
+                content = createAlertCard(msg);
+            } else if (msg.type === 'conversation') {
+                messageDiv.innerHTML = createConversationMessage(msg);
+                return messageDiv;
+            }
+
+            messageDiv.innerHTML = header + content;
+            return messageDiv;
+        }
+
+        function loadMessages() {
+            const messagesContainer = document.getElementById('messages');
+            messages.forEach((msg, index) => {
+                setTimeout(() => {
+                    messagesContainer.appendChild(renderMessage(msg, index));
+                }, index * 300);
+            });
+        }
+
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('open');
+            const header = section.previousElementSibling;
+            const arrow = header.querySelector('span:last-child');
+            arrow.textContent = section.classList.contains('open') ? '▼' : '▶';
+        }
+
+        function showModal(message) {
+            alert(message);
+        }
+
+        function showRepairModal() {
+            const confirmed = confirm(
+                '🔧 Auto-Repair All Failed Pipelines\n\n' +
+                'This will:\n' +
+                '1. Re-authenticate expired tokens (2 pipelines)\n' +
+                '2. Enable adaptive rate limiting (1 pipeline)\n' +
+                '3. Queue backfill jobs for 245,680 records\n\n' +
+                'Test run with 100 records executes first.\n\n' +
+                'Continue?'
+            );
+
+            if (confirmed) {
+                alert('✅ Repair initiated! Test run in progress...\n\nYou will be notified when complete.');
+            }
+        }
+
+        function handleAction(action, pipeline) {
+            if (action.includes('Re-authenticate')) {
+                const confirmed = confirm(
+                    `🔐 Re-authenticate ${pipeline}\n\n` +
+                    'You will be redirected to OAuth flow.\n' +
+                    'This link expires in 10 minutes.\n\n' +
+                    'Pipeline will auto-resume after successful authentication.'
+                );
+                if (confirmed) {
+                    alert('✅ Opening authentication window...');
+                }
+            } else if (action.includes('Auto-Repair')) {
+                alert(`🔧 Auto-repair for ${pipeline} initiated!\n\nImplementing adaptive rate limiting with exponential backoff...`);
+            } else if (action.includes('Migration Guide')) {
+                alert(`📖 LinkedIn API Migration Guide\n\nv2.0 → v3.0 Changes:\n• member_id → memberId\n• firstName → localizedFirstName\n• company → companyName\n\nFull documentation: linkedin.com/api/v3/migration`);
+            } else {
+                alert(`${action} for ${pipeline}`);
+            }
+        }
+
+        // Initialize
+        loadMessages();
+    </script>
+</body>
+</html>

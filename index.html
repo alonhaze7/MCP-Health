@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Health - Demo Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .card-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 3rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 MCP Health Dashboard</h1>
+        <p class="subtitle">Interactive demos for pipeline health monitoring and management</p>
+
+        <div class="cards">
+            <a href="slack-insights.html" class="card">
+                <div class="card-icon">💬</div>
+                <h2 class="card-title">Slack Insights & Actions</h2>
+                <p class="card-description">
+                    Real-time pipeline health notifications in Slack with AI-powered insights and automated repair actions. Get morning summaries, critical alerts, and conversational monitoring.
+                </p>
+                <span class="card-badge">Interactive Demo</span>
+            </a>
+
+            <a href="health-dashboard.html" class="card">
+                <div class="card-icon">📊</div>
+                <h2 class="card-title">Health Dashboard</h2>
+                <p class="card-description">
+                    Comprehensive monitoring dashboard with real-time metrics, pipeline status, error tracking, and performance analytics. Monitor all your data pipelines in one place.
+                </p>
+                <span class="card-badge">Live Dashboard</span>
+            </a>
+
+            <a href="headless-actions.html" class="card">
+                <div class="card-icon">⚙️</div>
+                <h2 class="card-title">Headless Actions</h2>
+                <p class="card-description">
+                    Automated pipeline management actions running in the background. View all scheduled jobs, auto-repair configurations, and health check automation.
+                </p>
+                <span class="card-badge">Reference Guide</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>Built with ❤️ for Data Pipeline Health Management</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Health Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+        }
+
+        .refresh-time {
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .metric-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .metric-change.positive {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .metric-change.negative {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin-top: 1rem;
+        }
+
+        .large-card {
+            grid-column: span 2;
+        }
+
+        .donut-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .donut-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .donut-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .donut-label {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .legend {
+            flex: 1;
+        }
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .legend-item:last-child {
+            border-bottom: none;
+        }
+
+        .legend-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-value {
+            font-weight: 600;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .summary-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-text h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-metrics {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .summary-metric {
+            text-align: center;
+        }
+
+        .summary-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .summary-metric-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            background: #f7fafc;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f7fafc;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.healthy {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-badge.warning {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+
+        .status-badge.critical {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 1s ease;
+        }
+
+        .sparkline {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+            height: 30px;
+        }
+
+        .sparkline-bar {
+            width: 4px;
+            background: #cbd5e0;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .sparkline-bar.success {
+            background: #48bb78;
+        }
+
+        .sparkline-bar.warning {
+            background: #ed8936;
+        }
+
+        .sparkline-bar.error {
+            background: #f56565;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .large-card {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .large-card {
+                grid-column: span 1;
+            }
+
+            .summary-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Pipeline Health Dashboard</h1>
+        <div class="header-actions">
+            <span class="refresh-time">Last refreshed: Jun 17, 2026, 1:10 PM</span>
+            <a href="index.html" class="back-btn">← Back to Hub</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Summary Card -->
+        <div class="summary-card">
+            <div class="summary-content">
+                <div class="summary-text">
+                    <h2>🎯 Overall Performance is rated as "Very High"</h2>
+                    <p style="opacity: 0.9; margin-top: 0.5rem;">
+                        Campaign revenue is performing exceptionally across metrics. The CTR stands at 2.27%, indicating effective engagement with optimized content, while the Conversion Rate is an impressive 2.40%, reflecting strong campaign delivery and conversions. Overall, the campaign is performing exceptionally well, exceeding expectations.
+                    </p>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="showDetails()">📋 Detailed</button>
+                        <button class="btn btn-secondary" onclick="exportReport()">📥 Export Report</button>
+                    </div>
+                </div>
+                <div class="summary-metrics">
+                    <div class="summary-metric">
+                        <div class="summary-metric-value">17</div>
+                        <div class="summary-metric-label">Total Pipelines</div>
+                    </div>
+                    <div class="summary-metric">
+                        <div class="summary-metric-value">14</div>
+                        <div class="summary-metric-label">Healthy</div>
+                    </div>
+                    <div class="summary-metric">
+                        <div class="summary-metric-value">3</div>
+                        <div class="summary-metric-label">Need Attention</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Metrics -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🎯 Key Metrics</div>
+                </div>
+                <div class="metric-value">$547,532.0</div>
+                <div class="metric-label">Spend</div>
+                <canvas id="spendChart" style="margin-top: 1rem;"></canvas>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💰 My Channels</div>
+                </div>
+                <div class="donut-container">
+                    <div class="donut-chart">
+                        <canvas id="channelsDonut"></canvas>
+                        <div class="donut-center">
+                            <div class="donut-value">$55.4M</div>
+                            <div class="donut-label">Total Revenue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📈 Revenue</div>
+                </div>
+                <div class="metric-value">$77M</div>
+                <div class="metric-label">Total Revenue</div>
+                <div class="metric-change positive">
+                    <span>↑</span>
+                    <span>12.5%</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📊 ROAS</div>
+                </div>
+                <div class="metric-value">14,074.4%</div>
+                <div class="metric-label">Return on Ad Spend</div>
+                <div class="metric-change positive">
+                    <span>↑</span>
+                    <span>8.3%</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💵 ROI</div>
+                </div>
+                <div class="metric-value">13,974.4%</div>
+                <div class="metric-label">Return on Investment</div>
+                <div class="metric-change positive">
+                    <span>↑</span>
+                    <span>7.2%</span>
+                </div>
+            </div>
+
+            <div class="card large-card">
+                <div class="card-header">
+                    <div class="card-title">📅 My Campaigns</div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Campaign</button>
+                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: #e2e8f0; color: #4a5568;">Anchor Campaigns</button>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 8px; text-align: center; color: #718096;">
+                    No recommended actions available
+                </div>
+            </div>
+        </div>
+
+        <!-- Pipeline Status Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">🔄 Pipeline Status Overview</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pipeline Name</th>
+                        <th>Workspace</th>
+                        <th>Status</th>
+                        <th>Records Today</th>
+                        <th>Success Rate</th>
+                        <th>7-Day Trend</th>
+                        <th>Last Run</th>
+                    </tr>
+                </thead>
+                <tbody id="pipelineTable">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Pipeline data
+        const pipelines = [
+            { name: 'Meta US', workspace: 'ws-us', status: 'healthy', records: 45280, successRate: 98.7, trend: [95, 97, 98, 99, 98, 99, 99], lastRun: '2 min ago' },
+            { name: 'Google Ads EMEA', workspace: 'ws-emea', status: 'healthy', records: 38920, successRate: 100, trend: [98, 99, 100, 100, 100, 100, 100], lastRun: '5 min ago' },
+            { name: 'TikTok US', workspace: 'ws-us', status: 'warning', records: 22140, successRate: 99.2, trend: [98, 99, 99, 100, 99, 98, 99], lastRun: '8 min ago' },
+            { name: 'LinkedIn APAC', workspace: 'ws-apac', status: 'healthy', records: 18650, successRate: 97.5, trend: [96, 97, 98, 97, 98, 97, 98], lastRun: '3 min ago' },
+            { name: 'Meta EMEA', workspace: 'ws-emea', status: 'critical', records: 4520, successRate: 5.2, trend: [98, 99, 100, 75, 12, 5, 5], lastRun: '2 hours ago' },
+            { name: 'Google Ads APAC', workspace: 'ws-apac', status: 'critical', records: 0, successRate: 0, trend: [99, 100, 100, 100, 0, 0, 0], lastRun: '3 days ago' },
+            { name: 'Twitter US', workspace: 'ws-us', status: 'healthy', records: 31200, successRate: 96.8, trend: [95, 96, 97, 96, 97, 97, 97], lastRun: '7 min ago' },
+            { name: 'Snapchat US', workspace: 'ws-us', status: 'healthy', records: 15840, successRate: 98.3, trend: [97, 98, 99, 98, 98, 99, 98], lastRun: '4 min ago' },
+            { name: 'Pinterest EMEA', workspace: 'ws-emea', status: 'healthy', records: 12560, successRate: 99.1, trend: [98, 99, 99, 100, 99, 99, 99], lastRun: '6 min ago' },
+            { name: 'LinkedIn US', workspace: 'ws-us', status: 'critical', records: 0, successRate: 0, trend: [100, 100, 100, 100, 100, 0, 0], lastRun: '2 days ago' },
+            { name: 'TikTok EMEA', workspace: 'ws-emea', status: 'healthy', records: 28450, successRate: 97.9, trend: [96, 97, 98, 98, 97, 98, 98], lastRun: '5 min ago' },
+            { name: 'Meta APAC', workspace: 'ws-apac', status: 'healthy', records: 34120, successRate: 98.5, trend: [97, 98, 99, 98, 99, 98, 99], lastRun: '3 min ago' },
+            { name: 'Google Ads US', workspace: 'ws-us', status: 'warning', records: 52300, successRate: 99.5, trend: [99, 100, 100, 99, 100, 99, 100], lastRun: '1 min ago' },
+            { name: 'Reddit US', workspace: 'ws-us', status: 'healthy', records: 9870, successRate: 96.2, trend: [95, 96, 96, 97, 96, 96, 96], lastRun: '9 min ago' },
+            { name: 'Spotify US', workspace: 'ws-us', status: 'healthy', records: 14230, successRate: 97.8, trend: [96, 97, 98, 97, 98, 98, 98], lastRun: '7 min ago' },
+            { name: 'Amazon Ads US', workspace: 'ws-us', status: 'healthy', records: 41680, successRate: 98.9, trend: [98, 98, 99, 99, 99, 99, 99], lastRun: '2 min ago' },
+            { name: 'Bing Ads EMEA', workspace: 'ws-emea', status: 'healthy', records: 19240, successRate: 97.3, trend: [96, 97, 97, 97, 98, 97, 97], lastRun: '6 min ago' }
+        ];
+
+        // Populate table
+        function populateTable() {
+            const tbody = document.getElementById('pipelineTable');
+            pipelines.forEach(pipeline => {
+                const row = document.createElement('tr');
+                row.style.cursor = 'pointer';
+                row.onclick = () => showPipelineDetails(pipeline);
+
+                const statusClass = pipeline.status;
+                const statusEmoji = pipeline.status === 'healthy' ? '🟢' : pipeline.status === 'warning' ? '🟡' : '🔴';
+
+                const sparklineHTML = pipeline.trend.map(value => {
+                    const height = value;
+                    const colorClass = value >= 95 ? 'success' : value >= 80 ? 'warning' : 'error';
+                    return `<div class="sparkline-bar ${colorClass}" style="height: ${height}%"></div>`;
+                }).join('');
+
+                row.innerHTML = `
+                    <td style="font-weight: 600;">${pipeline.name}</td>
+                    <td>${pipeline.workspace}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${statusEmoji} ${pipeline.status.charAt(0).toUpperCase() + pipeline.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>${pipeline.records.toLocaleString()}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-weight: 600; min-width: 45px;">${pipeline.successRate}%</span>
+                            <div class="progress-bar" style="flex: 1;">
+                                <div class="progress-fill" style="width: ${pipeline.successRate}%;"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="sparkline">
+                            ${sparklineHTML}
+                        </div>
+                    </td>
+                    <td style="color: #718096;">${pipeline.lastRun}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Charts
+        function initCharts() {
+            // Spend trend chart
+            const spendCtx = document.getElementById('spendChart').getContext('2d');
+            new Chart(spendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        data: [420000, 485000, 510000, 490000, 530000, 520000, 547532],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 0,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { display: false }
+                    }
+                }
+            });
+
+            // Channels donut chart
+            const donutCtx = document.getElementById('channelsDonut').getContext('2d');
+            new Chart(donutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['New Analytics', 'Display', 'Paid Social', 'Paid Search', 'SEM'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10],
+                        backgroundColor: [
+                            '#48bb78',
+                            '#4299e1',
+                            '#ed8936',
+                            '#f56565',
+                            '#9f7aea'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function showPipelineDetails(pipeline) {
+            alert(
+                `📊 ${pipeline.name} Details\n\n` +
+                `Workspace: ${pipeline.workspace}\n` +
+                `Status: ${pipeline.status}\n` +
+                `Records Today: ${pipeline.records.toLocaleString()}\n` +
+                `Success Rate: ${pipeline.successRate}%\n` +
+                `Last Run: ${pipeline.lastRun}\n\n` +
+                `Click to view detailed logs and metrics.`
+            );
+        }
+
+        function showDetails() {
+            alert('📋 Detailed report view would open here with comprehensive metrics and insights.');
+        }
+
+        function exportReport() {
+            alert('📥 Exporting full dashboard report as PDF...\n\nReport will be downloaded shortly.');
+        }
+
+        // Initialize
+        populateTable();
+        initCharts();
+
+        // Auto-refresh simulation
+        setInterval(() => {
+            const refreshTime = document.querySelector('.refresh-time');
+            const now = new Date();
+            refreshTime.textContent = `Last refreshed: ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}, ${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+        }, 60000);
+    </script>
+</body>
+</html>
