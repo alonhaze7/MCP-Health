@@ -76,7 +76,7 @@
         .card {
             background: white;
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
@@ -100,14 +100,14 @@
         }
 
         .metric-value {
-            font-size: 2.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: #1a202c;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .metric-label {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #718096;
         }
 
@@ -134,8 +134,8 @@
 
         .chart-container {
             position: relative;
-            height: 200px;
-            margin-top: 1rem;
+            height: 80px;
+            margin-top: 0.5rem;
         }
 
         .large-card {
@@ -145,14 +145,15 @@
         .donut-container {
             display: flex;
             align-items: center;
-            gap: 2rem;
-            margin-top: 1rem;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
         }
 
         .donut-chart {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 120px;
+            height: 120px;
         }
 
         .donut-center {
@@ -164,13 +165,13 @@
         }
 
         .donut-value {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #1a202c;
         }
 
         .donut-label {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: #718096;
         }
 
@@ -455,7 +456,7 @@
                 </div>
                 <div class="metric-value">2.8M</div>
                 <div class="metric-label">Records Processed</div>
-                <canvas id="volumeChart" style="margin-top: 1rem;"></canvas>
+                <canvas id="volumeChart" style="margin-top: 0.5rem; height: 60px;"></canvas>
             </div>
 
             <div class="card">
@@ -513,18 +514,18 @@
                 <div class="card-header">
                     <div class="card-title">🚨 Recent Alerts</div>
                 </div>
-                <div style="margin-top: 1rem;">
-                    <div style="padding: 0.75rem; background: #fed7d7; border-left: 4px solid #f56565; border-radius: 6px; margin-bottom: 0.75rem;">
-                        <div style="font-weight: 600; color: #742a2a; margin-bottom: 0.25rem;">🔴 Google Ads APAC - Token Expired</div>
-                        <div style="font-size: 0.85rem; color: #742a2a;">142,840 records affected • 3 days ago</div>
+                <div style="margin-top: 0.5rem;">
+                    <div style="padding: 0.5rem 0.75rem; background: #fed7d7; border-left: 3px solid #f56565; border-radius: 4px; margin-bottom: 0.5rem;">
+                        <div style="font-weight: 600; font-size: 0.9rem; color: #742a2a; margin-bottom: 0.15rem;">🔴 Google Ads APAC - Token Expired</div>
+                        <div style="font-size: 0.75rem; color: #742a2a;">142,840 records • 3 days ago</div>
                     </div>
-                    <div style="padding: 0.75rem; background: #fed7d7; border-left: 4px solid #f56565; border-radius: 6px; margin-bottom: 0.75rem;">
-                        <div style="font-weight: 600; color: #742a2a; margin-bottom: 0.25rem;">🔴 Meta EMEA - Rate Limit Exceeded</div>
-                        <div style="font-size: 0.85rem; color: #742a2a;">82,680 records affected • 4 days ago</div>
+                    <div style="padding: 0.5rem 0.75rem; background: #fed7d7; border-left: 3px solid #f56565; border-radius: 4px; margin-bottom: 0.5rem;">
+                        <div style="font-weight: 600; font-size: 0.9rem; color: #742a2a; margin-bottom: 0.15rem;">🔴 Meta EMEA - Rate Limit Exceeded</div>
+                        <div style="font-size: 0.75rem; color: #742a2a;">82,680 records • 4 days ago</div>
                     </div>
-                    <div style="padding: 0.75rem; background: #fed7d7; border-left: 4px solid #f56565; border-radius: 6px;">
-                        <div style="font-weight: 600; color: #742a2a; margin-bottom: 0.25rem;">🔴 LinkedIn US - API Deprecated</div>
-                        <div style="font-size: 0.85rem; color: #742a2a;">15,640 records affected • 2 days ago</div>
+                    <div style="padding: 0.5rem 0.75rem; background: #fed7d7; border-left: 3px solid #f56565; border-radius: 4px;">
+                        <div style="font-weight: 600; font-size: 0.9rem; color: #742a2a; margin-bottom: 0.15rem;">🔴 LinkedIn US - API Deprecated</div>
+                        <div style="font-size: 0.75rem; color: #742a2a;">15,640 records • 2 days ago</div>
                     </div>
                 </div>
             </div>
