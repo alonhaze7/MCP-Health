@@ -376,6 +376,33 @@
             background: #f56565;
         }
 
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #f7fafc;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #e01e5a;
+            color: white;
+            border-color: #e01e5a;
+        }
+
+        .btn-danger:hover {
+            background: #c01048;
+            border-color: #c01048;
+        }
+
         @media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -536,12 +563,13 @@
                 <thead>
                     <tr>
                         <th>Pipeline Name</th>
-                        <th>Workspace</th>
+                        <th>Data Space</th>
                         <th>Status</th>
                         <th>Records Today</th>
                         <th>Success Rate</th>
-                        <th>7-Day Trend</th>
+                        <th>30-Day Trend</th>
                         <th>Last Run</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="pipelineTable">
@@ -552,47 +580,93 @@
     </div>
 
     <script>
+        // Generate 30-day trend data
+        function generate30DayTrend(status, successRate) {
+            const trend = [];
+            if (status === 'critical') {
+                // Failed pipeline - good for 27 days, then failed for 3 days
+                for (let i = 0; i < 27; i++) trend.push(95 + Math.random() * 5);
+                for (let i = 0; i < 3; i++) trend.push(0 + Math.random() * 10);
+            } else if (status === 'warning') {
+                // Warning - mostly good with occasional dips
+                for (let i = 0; i < 30; i++) {
+                    trend.push(successRate - 3 + Math.random() * 3);
+                }
+            } else {
+                // Healthy - consistently good
+                for (let i = 0; i < 30; i++) {
+                    trend.push(successRate - 2 + Math.random() * 2);
+                }
+            }
+            return trend;
+        }
+
         // Pipeline data
         const pipelines = [
-            { name: 'Meta US', workspace: 'ws-us', status: 'healthy', records: 45280, successRate: 98.7, trend: [95, 97, 98, 99, 98, 99, 99], lastRun: '2 min ago' },
-            { name: 'Google Ads EMEA', workspace: 'ws-emea', status: 'healthy', records: 38920, successRate: 100, trend: [98, 99, 100, 100, 100, 100, 100], lastRun: '5 min ago' },
-            { name: 'TikTok US', workspace: 'ws-us', status: 'warning', records: 22140, successRate: 99.2, trend: [98, 99, 99, 100, 99, 98, 99], lastRun: '8 min ago' },
-            { name: 'LinkedIn APAC', workspace: 'ws-apac', status: 'healthy', records: 18650, successRate: 97.5, trend: [96, 97, 98, 97, 98, 97, 98], lastRun: '3 min ago' },
-            { name: 'Meta EMEA', workspace: 'ws-emea', status: 'critical', records: 4520, successRate: 5.2, trend: [98, 99, 100, 75, 12, 5, 5], lastRun: '2 hours ago' },
-            { name: 'Google Ads APAC', workspace: 'ws-apac', status: 'critical', records: 0, successRate: 0, trend: [99, 100, 100, 100, 0, 0, 0], lastRun: '3 days ago' },
-            { name: 'Twitter US', workspace: 'ws-us', status: 'healthy', records: 31200, successRate: 96.8, trend: [95, 96, 97, 96, 97, 97, 97], lastRun: '7 min ago' },
-            { name: 'Snapchat US', workspace: 'ws-us', status: 'healthy', records: 15840, successRate: 98.3, trend: [97, 98, 99, 98, 98, 99, 98], lastRun: '4 min ago' },
-            { name: 'Pinterest EMEA', workspace: 'ws-emea', status: 'healthy', records: 12560, successRate: 99.1, trend: [98, 99, 99, 100, 99, 99, 99], lastRun: '6 min ago' },
-            { name: 'LinkedIn US', workspace: 'ws-us', status: 'critical', records: 0, successRate: 0, trend: [100, 100, 100, 100, 100, 0, 0], lastRun: '2 days ago' },
-            { name: 'TikTok EMEA', workspace: 'ws-emea', status: 'healthy', records: 28450, successRate: 97.9, trend: [96, 97, 98, 98, 97, 98, 98], lastRun: '5 min ago' },
-            { name: 'Meta APAC', workspace: 'ws-apac', status: 'healthy', records: 34120, successRate: 98.5, trend: [97, 98, 99, 98, 99, 98, 99], lastRun: '3 min ago' },
-            { name: 'Google Ads US', workspace: 'ws-us', status: 'warning', records: 52300, successRate: 99.5, trend: [99, 100, 100, 99, 100, 99, 100], lastRun: '1 min ago' },
-            { name: 'Reddit US', workspace: 'ws-us', status: 'healthy', records: 9870, successRate: 96.2, trend: [95, 96, 96, 97, 96, 96, 96], lastRun: '9 min ago' },
-            { name: 'Spotify US', workspace: 'ws-us', status: 'healthy', records: 14230, successRate: 97.8, trend: [96, 97, 98, 97, 98, 98, 98], lastRun: '7 min ago' },
-            { name: 'Amazon Ads US', workspace: 'ws-us', status: 'healthy', records: 41680, successRate: 98.9, trend: [98, 98, 99, 99, 99, 99, 99], lastRun: '2 min ago' },
-            { name: 'Bing Ads EMEA', workspace: 'ws-emea', status: 'healthy', records: 19240, successRate: 97.3, trend: [96, 97, 97, 97, 98, 97, 97], lastRun: '6 min ago' }
+            { name: 'Meta US', dataSpace: 'Marketing-US', status: 'healthy', records: 45280, successRate: 98.7, lastRun: '2 min ago' },
+            { name: 'Google Ads EMEA', dataSpace: 'Marketing-EMEA', status: 'healthy', records: 38920, successRate: 100, lastRun: '5 min ago' },
+            { name: 'TikTok US', dataSpace: 'Social-US', status: 'warning', records: 22140, successRate: 99.2, lastRun: '8 min ago' },
+            { name: 'LinkedIn APAC', dataSpace: 'Social-APAC', status: 'healthy', records: 18650, successRate: 97.5, lastRun: '3 min ago' },
+            { name: 'Meta EMEA', dataSpace: 'Marketing-EMEA', status: 'critical', records: 4520, successRate: 5.2, lastRun: '2 hours ago', failedDays: 4 },
+            { name: 'Google Ads APAC', dataSpace: 'Marketing-APAC', status: 'critical', records: 0, successRate: 0, lastRun: '3 days ago', failedDays: 3 },
+            { name: 'Twitter US', dataSpace: 'Social-US', status: 'healthy', records: 31200, successRate: 96.8, lastRun: '7 min ago' },
+            { name: 'Snapchat US', dataSpace: 'Social-US', status: 'healthy', records: 15840, successRate: 98.3, lastRun: '4 min ago' },
+            { name: 'Pinterest EMEA', dataSpace: 'Social-EMEA', status: 'healthy', records: 12560, successRate: 99.1, lastRun: '6 min ago' },
+            { name: 'LinkedIn US', dataSpace: 'Social-US', status: 'critical', records: 0, successRate: 0, lastRun: '2 days ago', failedDays: 2 },
+            { name: 'TikTok EMEA', dataSpace: 'Social-EMEA', status: 'healthy', records: 28450, successRate: 97.9, lastRun: '5 min ago' },
+            { name: 'Meta APAC', dataSpace: 'Marketing-APAC', status: 'healthy', records: 34120, successRate: 98.5, lastRun: '3 min ago' },
+            { name: 'Google Ads US', dataSpace: 'Marketing-US', status: 'warning', records: 52300, successRate: 99.5, lastRun: '1 min ago' },
+            { name: 'Reddit US', dataSpace: 'Social-US', status: 'healthy', records: 9870, successRate: 96.2, lastRun: '9 min ago' },
+            { name: 'Spotify US', dataSpace: 'Audio-US', status: 'healthy', records: 14230, successRate: 97.8, lastRun: '7 min ago' },
+            { name: 'Amazon Ads US', dataSpace: 'Ecommerce-US', status: 'healthy', records: 41680, successRate: 98.9, lastRun: '2 min ago' },
+            { name: 'Bing Ads EMEA', dataSpace: 'Search-EMEA', status: 'healthy', records: 19240, successRate: 97.3, lastRun: '6 min ago' }
         ];
+
+        // Generate trends for all pipelines
+        pipelines.forEach(pipeline => {
+            pipeline.trend = generate30DayTrend(pipeline.status, pipeline.successRate);
+        });
 
         // Populate table
         function populateTable() {
             const tbody = document.getElementById('pipelineTable');
             pipelines.forEach(pipeline => {
                 const row = document.createElement('tr');
-                row.style.cursor = 'pointer';
-                row.onclick = () => showPipelineDetails(pipeline);
 
                 const statusClass = pipeline.status;
                 const statusEmoji = pipeline.status === 'healthy' ? '🟢' : pipeline.status === 'warning' ? '🟡' : '🔴';
 
-                const sparklineHTML = pipeline.trend.map(value => {
-                    const height = value;
+                // Sample every 4th day for 30-day trend to keep sparkline reasonable
+                const sampledTrend = pipeline.trend.filter((_, i) => i % 4 === 0);
+                const sparklineHTML = sampledTrend.map(value => {
+                    const height = Math.max(value, 5);
                     const colorClass = value >= 95 ? 'success' : value >= 80 ? 'warning' : 'error';
                     return `<div class="sparkline-bar ${colorClass}" style="height: ${height}%"></div>`;
                 }).join('');
 
+                // Action buttons for failed pipelines
+                let actionHTML = '';
+                if (pipeline.status === 'critical') {
+                    actionHTML = `
+                        <button class="btn btn-danger" onclick="event.stopPropagation(); reprocessFailedRuns('${pipeline.name}', ${pipeline.failedDays})"
+                                style="padding: 0.4rem 0.75rem; font-size: 0.8rem; white-space: nowrap;">
+                            🔄 Reprocess
+                        </button>
+                    `;
+                } else if (pipeline.status === 'warning') {
+                    actionHTML = `
+                        <button class="btn" onclick="event.stopPropagation(); viewDetails('${pipeline.name}')"
+                                style="padding: 0.4rem 0.75rem; font-size: 0.8rem; background: #fff; border: 1px solid #d0d0d0;">
+                            📊 Details
+                        </button>
+                    `;
+                } else {
+                    actionHTML = '<span style="color: #a0aec0; font-size: 0.8rem;">—</span>';
+                }
+
                 row.innerHTML = `
-                    <td style="font-weight: 600;">${pipeline.name}</td>
-                    <td>${pipeline.workspace}</td>
+                    <td style="font-weight: 600; cursor: pointer;" onclick="showPipelineDetails(${JSON.stringify(pipeline).replace(/"/g, '&quot;')})">${pipeline.name}</td>
+                    <td>${pipeline.dataSpace}</td>
                     <td>
                         <span class="status-badge ${statusClass}">
                             ${statusEmoji} ${pipeline.status.charAt(0).toUpperCase() + pipeline.status.slice(1)}
@@ -613,6 +687,7 @@
                         </div>
                     </td>
                     <td style="color: #718096;">${pipeline.lastRun}</td>
+                    <td>${actionHTML}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -688,12 +763,49 @@
         function showPipelineDetails(pipeline) {
             alert(
                 `📊 ${pipeline.name} Details\n\n` +
-                `Workspace: ${pipeline.workspace}\n` +
+                `Data Space: ${pipeline.dataSpace}\n` +
                 `Status: ${pipeline.status}\n` +
                 `Records Today: ${pipeline.records.toLocaleString()}\n` +
                 `Success Rate: ${pipeline.successRate}%\n` +
                 `Last Run: ${pipeline.lastRun}\n\n` +
                 `Click to view detailed logs and metrics.`
+            );
+        }
+
+        function reprocessFailedRuns(pipelineName, failedDays) {
+            const confirmed = confirm(
+                `🔄 Reprocess Failed Runs\n\n` +
+                `Pipeline: ${pipelineName}\n` +
+                `Failed Days: ${failedDays}\n\n` +
+                `This will:\n` +
+                `• Identify all failed date ranges (past ${failedDays} days)\n` +
+                `• Queue backfill jobs for missing data\n` +
+                `• Retry with auto-repair enabled\n` +
+                `• Notify you when complete\n\n` +
+                `Estimated time: ${failedDays * 20} minutes\n\n` +
+                `Continue?`
+            );
+
+            if (confirmed) {
+                alert(
+                    `✅ Reprocessing Initiated!\n\n` +
+                    `Pipeline: ${pipelineName}\n` +
+                    `Status: Queued for reprocessing\n\n` +
+                    `You will receive a Slack notification when the backfill completes.\n` +
+                    `Progress can be tracked in the Operations dashboard.`
+                );
+            }
+        }
+
+        function viewDetails(pipelineName) {
+            alert(
+                `📊 ${pipelineName} Warning Details\n\n` +
+                `Recent Issues:\n` +
+                `• Intermittent rate limiting detected\n` +
+                `• Success rate slightly below threshold\n` +
+                `• No data loss detected\n\n` +
+                `Recommended Action:\n` +
+                `Monitor for next 24 hours. Auto-repair is active.`
             );
         }
 
