@@ -421,12 +421,12 @@
         <div class="summary-card">
             <div class="summary-content">
                 <div class="summary-text">
-                    <h2>🎯 Overall Performance is rated as "Very High"</h2>
+                    <h2>🎯 Pipeline Health Status: Good</h2>
                     <p style="opacity: 0.9; margin-top: 0.5rem;">
-                        Campaign revenue is performing exceptionally across metrics. The CTR stands at 2.27%, indicating effective engagement with optimized content, while the Conversion Rate is an impressive 2.40%, reflecting strong campaign delivery and conversions. Overall, the campaign is performing exceptionally well, exceeding expectations.
+                        Overall system health is good with 82% of pipelines operating normally. 3 pipelines require attention due to authentication and rate limiting issues. All affected data can be recovered through automated backfill processes once issues are resolved.
                     </p>
                     <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="showDetails()">📋 Detailed</button>
+                        <button class="btn btn-primary" onclick="showDetails()">📋 View Issues</button>
                         <button class="btn btn-secondary" onclick="exportReport()">📥 Export Report</button>
                     </div>
                 </div>
@@ -451,23 +451,23 @@
         <div class="dashboard-grid">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">🎯 Key Metrics</div>
+                    <div class="card-title">📊 Data Volume (24h)</div>
                 </div>
-                <div class="metric-value">$547,532.0</div>
-                <div class="metric-label">Spend</div>
-                <canvas id="spendChart" style="margin-top: 1rem;"></canvas>
+                <div class="metric-value">2.8M</div>
+                <div class="metric-label">Records Processed</div>
+                <canvas id="volumeChart" style="margin-top: 1rem;"></canvas>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">💰 My Channels</div>
+                    <div class="card-title">⚡ Pipeline Status</div>
                 </div>
                 <div class="donut-container">
                     <div class="donut-chart">
-                        <canvas id="channelsDonut"></canvas>
+                        <canvas id="statusDonut"></canvas>
                         <div class="donut-center">
-                            <div class="donut-value">$55.4M</div>
-                            <div class="donut-label">Total Revenue</div>
+                            <div class="donut-value">82%</div>
+                            <div class="donut-label">Healthy</div>
                         </div>
                     </div>
                 </div>
@@ -475,50 +475,57 @@
 
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">📈 Revenue</div>
+                    <div class="card-title">✅ Success Rate</div>
                 </div>
-                <div class="metric-value">$77M</div>
-                <div class="metric-label">Total Revenue</div>
+                <div class="metric-value">98.2%</div>
+                <div class="metric-label">Overall Success Rate</div>
                 <div class="metric-change positive">
                     <span>↑</span>
-                    <span>12.5%</span>
+                    <span>2.1%</span>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">📊 ROAS</div>
+                    <div class="card-title">🔄 Active Syncs</div>
                 </div>
-                <div class="metric-value">14,074.4%</div>
-                <div class="metric-label">Return on Ad Spend</div>
+                <div class="metric-value">14</div>
+                <div class="metric-label">Pipelines Running</div>
                 <div class="metric-change positive">
-                    <span>↑</span>
-                    <span>8.3%</span>
+                    <span>●</span>
+                    <span>3 queued</span>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">💵 ROI</div>
+                    <div class="card-title">⏱️ Avg Sync Time</div>
                 </div>
-                <div class="metric-value">13,974.4%</div>
-                <div class="metric-label">Return on Investment</div>
+                <div class="metric-value">12m</div>
+                <div class="metric-label">Average Pipeline Duration</div>
                 <div class="metric-change positive">
-                    <span>↑</span>
-                    <span>7.2%</span>
+                    <span>↓</span>
+                    <span>15% faster</span>
                 </div>
             </div>
 
             <div class="card large-card">
                 <div class="card-header">
-                    <div class="card-title">📅 My Campaigns</div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Campaign</button>
-                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; background: #e2e8f0; color: #4a5568;">Anchor Campaigns</button>
-                    </div>
+                    <div class="card-title">🚨 Recent Alerts</div>
                 </div>
-                <div style="margin-top: 1rem; padding: 1rem; background: #f7fafc; border-radius: 8px; text-align: center; color: #718096;">
-                    No recommended actions available
+                <div style="margin-top: 1rem;">
+                    <div style="padding: 0.75rem; background: #fed7d7; border-left: 4px solid #f56565; border-radius: 6px; margin-bottom: 0.75rem;">
+                        <div style="font-weight: 600; color: #742a2a; margin-bottom: 0.25rem;">🔴 Google Ads APAC - Token Expired</div>
+                        <div style="font-size: 0.85rem; color: #742a2a;">142,840 records affected • 3 days ago</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: #fed7d7; border-left: 4px solid #f56565; border-radius: 6px; margin-bottom: 0.75rem;">
+                        <div style="font-weight: 600; color: #742a2a; margin-bottom: 0.25rem;">🔴 Meta EMEA - Rate Limit Exceeded</div>
+                        <div style="font-size: 0.85rem; color: #742a2a;">82,680 records affected • 4 days ago</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: #fed7d7; border-left: 4px solid #f56565; border-radius: 6px;">
+                        <div style="font-weight: 600; color: #742a2a; margin-bottom: 0.25rem;">🔴 LinkedIn US - API Deprecated</div>
+                        <div style="font-size: 0.85rem; color: #742a2a;">15,640 records affected • 2 days ago</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -616,14 +623,14 @@
 
         // Charts
         function initCharts() {
-            // Spend trend chart
-            const spendCtx = document.getElementById('spendChart').getContext('2d');
-            new Chart(spendCtx, {
+            // Volume trend chart
+            const volumeCtx = document.getElementById('volumeChart').getContext('2d');
+            new Chart(volumeCtx, {
                 type: 'line',
                 data: {
                     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                     datasets: [{
-                        data: [420000, 485000, 510000, 490000, 530000, 520000, 547532],
+                        data: [2.4, 2.6, 2.5, 2.7, 2.8, 2.3, 2.8],
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
                         tension: 0.4,
@@ -643,20 +650,18 @@
                 }
             });
 
-            // Channels donut chart
-            const donutCtx = document.getElementById('channelsDonut').getContext('2d');
+            // Pipeline status donut chart
+            const donutCtx = document.getElementById('statusDonut').getContext('2d');
             new Chart(donutCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['New Analytics', 'Display', 'Paid Social', 'Paid Search', 'SEM'],
+                    labels: ['Healthy', 'Warning', 'Failed'],
                     datasets: [{
-                        data: [30, 25, 20, 15, 10],
+                        data: [14, 0, 3],
                         backgroundColor: [
                             '#48bb78',
-                            '#4299e1',
-                            '#ed8936',
-                            '#f56565',
-                            '#9f7aea'
+                            '#f59e0b',
+                            '#f56565'
                         ],
                         borderWidth: 0
                     }]
@@ -685,7 +690,11 @@
         }
 
         function showDetails() {
-            alert('📋 Detailed report view would open here with comprehensive metrics and insights.');
+            alert('📋 Critical Issues:\n\n' +
+                  '1. Google Ads APAC - Token expired (3 days)\n' +
+                  '2. Meta EMEA - Rate limit exceeded (4 days)\n' +
+                  '3. LinkedIn US - API deprecated (2 days)\n\n' +
+                  'Click individual pipelines in the table below for remediation options.');
         }
 
         function exportReport() {
