@@ -403,6 +403,17 @@
             border-color: #c01048;
         }
 
+        .btn-auth {
+            background: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+
+        .btn-auth:hover {
+            background: #d97706;
+            border-color: #d97706;
+        }
+
         @media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -605,17 +616,17 @@
         const pipelines = [
             { name: 'Meta US', dataSpace: 'Marketing-US', status: 'healthy', records: 45280, successRate: 98.7, lastRun: '2 min ago' },
             { name: 'Google Ads EMEA', dataSpace: 'Marketing-EMEA', status: 'healthy', records: 38920, successRate: 100, lastRun: '5 min ago' },
-            { name: 'TikTok US', dataSpace: 'Social-US', status: 'warning', records: 22140, successRate: 99.2, lastRun: '8 min ago' },
+            { name: 'TikTok US', dataSpace: 'Social-US', status: 'warning', records: 22140, successRate: 99.2, lastRun: '8 min ago', error: 'Rate limit warnings' },
             { name: 'LinkedIn APAC', dataSpace: 'Social-APAC', status: 'healthy', records: 18650, successRate: 97.5, lastRun: '3 min ago' },
-            { name: 'Meta EMEA', dataSpace: 'Marketing-EMEA', status: 'critical', records: 4520, successRate: 5.2, lastRun: '2 hours ago', failedDays: 4 },
-            { name: 'Google Ads APAC', dataSpace: 'Marketing-APAC', status: 'critical', records: 0, successRate: 0, lastRun: '3 days ago', failedDays: 3 },
+            { name: 'Meta EMEA', dataSpace: 'Marketing-EMEA', status: 'critical', records: 4520, successRate: 5.2, lastRun: '2 hours ago', failedDays: 4, error: 'Rate limit exceeded' },
+            { name: 'Google Ads APAC', dataSpace: 'Marketing-APAC', status: 'critical', records: 0, successRate: 0, lastRun: '3 days ago', failedDays: 3, error: 'Token expired', needsAuth: true },
             { name: 'Twitter US', dataSpace: 'Social-US', status: 'healthy', records: 31200, successRate: 96.8, lastRun: '7 min ago' },
             { name: 'Snapchat US', dataSpace: 'Social-US', status: 'healthy', records: 15840, successRate: 98.3, lastRun: '4 min ago' },
             { name: 'Pinterest EMEA', dataSpace: 'Social-EMEA', status: 'healthy', records: 12560, successRate: 99.1, lastRun: '6 min ago' },
-            { name: 'LinkedIn US', dataSpace: 'Social-US', status: 'critical', records: 0, successRate: 0, lastRun: '2 days ago', failedDays: 2 },
+            { name: 'LinkedIn US', dataSpace: 'Social-US', status: 'critical', records: 0, successRate: 0, lastRun: '2 days ago', failedDays: 2, error: 'API deprecated' },
             { name: 'TikTok EMEA', dataSpace: 'Social-EMEA', status: 'healthy', records: 28450, successRate: 97.9, lastRun: '5 min ago' },
             { name: 'Meta APAC', dataSpace: 'Marketing-APAC', status: 'healthy', records: 34120, successRate: 98.5, lastRun: '3 min ago' },
-            { name: 'Google Ads US', dataSpace: 'Marketing-US', status: 'warning', records: 52300, successRate: 99.5, lastRun: '1 min ago' },
+            { name: 'Google Ads US', dataSpace: 'Marketing-US', status: 'warning', records: 52300, successRate: 99.5, lastRun: '1 min ago', error: 'Token expires in 2 days' },
             { name: 'Reddit US', dataSpace: 'Social-US', status: 'healthy', records: 9870, successRate: 96.2, lastRun: '9 min ago' },
             { name: 'Spotify US', dataSpace: 'Audio-US', status: 'healthy', records: 14230, successRate: 97.8, lastRun: '7 min ago' },
             { name: 'Amazon Ads US', dataSpace: 'Ecommerce-US', status: 'healthy', records: 41680, successRate: 98.9, lastRun: '2 min ago' },
@@ -644,18 +655,29 @@
                     return `<div class="sparkline-bar ${colorClass}" style="height: ${height}%"></div>`;
                 }).join('');
 
-                // Action buttons for failed pipelines
+                // Action buttons based on pipeline status and error type
                 let actionHTML = '';
                 if (pipeline.status === 'critical') {
-                    actionHTML = `
-                        <button class="btn btn-danger" onclick="event.stopPropagation(); reprocessFailedRuns('${pipeline.name}', ${pipeline.failedDays})"
-                                style="padding: 0.4rem 0.75rem; font-size: 0.8rem; white-space: nowrap;">
-                            🔄 Reprocess
-                        </button>
-                    `;
+                    if (pipeline.needsAuth) {
+                        // Token expired - needs re-authentication
+                        actionHTML = `
+                            <button class="btn btn-auth" onclick="event.stopPropagation(); reauthenticate('${pipeline.name}')"
+                                    style="padding: 0.4rem 0.75rem; font-size: 0.8rem; white-space: nowrap; background: #f59e0b; color: white; border-color: #f59e0b;">
+                                🔐 Re-authenticate
+                            </button>
+                        `;
+                    } else {
+                        // Other failures - needs reprocessing
+                        actionHTML = `
+                            <button class="btn btn-danger" onclick="event.stopPropagation(); reprocessFailedRuns('${pipeline.name}', ${pipeline.failedDays}, '${pipeline.error || 'Unknown error'}')"
+                                    style="padding: 0.4rem 0.75rem; font-size: 0.8rem; white-space: nowrap;">
+                                🔄 Reprocess
+                            </button>
+                        `;
+                    }
                 } else if (pipeline.status === 'warning') {
                     actionHTML = `
-                        <button class="btn" onclick="event.stopPropagation(); viewDetails('${pipeline.name}')"
+                        <button class="btn" onclick="event.stopPropagation(); viewDetails('${pipeline.name}', '${pipeline.error || 'Performance warning'}')"
                                 style="padding: 0.4rem 0.75rem; font-size: 0.8rem; background: #fff; border: 1px solid #d0d0d0;">
                             📊 Details
                         </button>
@@ -772,10 +794,11 @@
             );
         }
 
-        function reprocessFailedRuns(pipelineName, failedDays) {
+        function reprocessFailedRuns(pipelineName, failedDays, error) {
             const confirmed = confirm(
                 `🔄 Reprocess Failed Runs\n\n` +
                 `Pipeline: ${pipelineName}\n` +
+                `Error: ${error}\n` +
                 `Failed Days: ${failedDays}\n\n` +
                 `This will:\n` +
                 `• Identify all failed date ranges (past ${failedDays} days)\n` +
@@ -797,15 +820,44 @@
             }
         }
 
-        function viewDetails(pipelineName) {
+        function reauthenticate(pipelineName) {
+            const confirmed = confirm(
+                `🔐 Re-authenticate ${pipelineName}\n\n` +
+                `Issue: OAuth token has expired\n\n` +
+                `This will:\n` +
+                `• Open OAuth consent flow in new window\n` +
+                `• Request necessary permissions\n` +
+                `• Store new access token securely\n` +
+                `• Auto-resume pipeline after successful auth\n\n` +
+                `Note: Authentication link expires in 10 minutes.\n\n` +
+                `Continue?`
+            );
+
+            if (confirmed) {
+                alert(
+                    `✅ Opening Authentication Window...\n\n` +
+                    `Pipeline: ${pipelineName}\n\n` +
+                    `Next Steps:\n` +
+                    `1. Complete OAuth flow in the new window\n` +
+                    `2. Grant necessary permissions\n` +
+                    `3. Pipeline will auto-resume upon success\n` +
+                    `4. Backfill jobs will be queued automatically\n\n` +
+                    `You'll receive a Slack notification when authentication is complete.`
+                );
+            }
+        }
+
+        function viewDetails(pipelineName, error) {
             alert(
                 `📊 ${pipelineName} Warning Details\n\n` +
-                `Recent Issues:\n` +
-                `• Intermittent rate limiting detected\n` +
+                `Issue: ${error}\n\n` +
+                `Recent Observations:\n` +
+                `• Intermittent performance degradation\n` +
                 `• Success rate slightly below threshold\n` +
-                `• No data loss detected\n\n` +
+                `• No data loss detected\n` +
+                `• Auto-repair monitoring active\n\n` +
                 `Recommended Action:\n` +
-                `Monitor for next 24 hours. Auto-repair is active.`
+                `Monitor for next 24 hours. Auto-repair will handle transient issues.`
             );
         }
 
