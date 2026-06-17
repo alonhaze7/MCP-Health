@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Headless Actions - Pipeline Automation</title>
+    <title>Headless Actions - MCP Tools Reference</title>
     <style>
         * {
             margin: 0;
@@ -13,19 +13,20 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
+            background: #f8f9fa;
+            color: #1a202c;
             line-height: 1.6;
         }
 
         .header {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            padding: 2rem;
-            border-bottom: 1px solid #334155;
+            background: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .header-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -33,19 +34,19 @@
         }
 
         .header h1 {
-            font-size: 2rem;
-            color: #f1f5f9;
+            font-size: 1.75rem;
+            color: #1a202c;
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
 
         .back-btn {
-            background: #334155;
+            background: #667eea;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.65rem 1.25rem;
+            border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
             font-size: 0.9rem;
@@ -54,240 +55,158 @@
         }
 
         .back-btn:hover {
-            background: #475569;
+            background: #5568d3;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 2rem;
         }
 
         .intro {
-            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 2rem;
             border-radius: 12px;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .intro h2 {
             font-size: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .intro p {
-            font-size: 1.05rem;
+            font-size: 1rem;
             opacity: 0.95;
-            line-height: 1.8;
-        }
-
-        .section {
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 1.75rem;
-            margin-bottom: 1.5rem;
-            color: #f1f5f9;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .action-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .action-card:hover {
-            border-color: #6366f1;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(99, 102, 241, 0.2);
-        }
-
-        .action-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .action-icon {
-            font-size: 2.5rem;
-        }
-
-        .action-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .action-status.active {
-            background: #10b981;
-            color: white;
-        }
-
-        .action-status.scheduled {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .action-status.paused {
-            background: #6b7280;
-            color: white;
-        }
-
-        .action-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #f1f5f9;
-            margin-bottom: 0.5rem;
-        }
-
-        .action-description {
-            color: #94a3b8;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .action-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin: 1rem 0;
-            padding: 1rem;
-            background: #0f172a;
-            border-radius: 8px;
-            font-size: 0.85rem;
-        }
-
-        .meta-row {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .meta-label {
-            color: #64748b;
-        }
-
-        .meta-value {
-            color: #e2e8f0;
-            font-weight: 600;
-        }
-
-        .action-triggers {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #334155;
-        }
-
-        .trigger-label {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .trigger-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .trigger-tag {
-            padding: 0.375rem 0.75rem;
-            background: #334155;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-        }
-
-        .code-block {
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-        }
-
-        .code-block pre {
-            margin: 0;
-            color: #94a3b8;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-
-        .code-block code {
-            color: #f1f5f9;
-        }
-
-        .keyword {
-            color: #c084fc;
-        }
-
-        .string {
-            color: #34d399;
-        }
-
-        .number {
-            color: #fbbf24;
-        }
-
-        .comment {
-            color: #64748b;
-            font-style: italic;
+            line-height: 1.7;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 1.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
             text-align: center;
         }
 
         .stat-value {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: #6366f1;
-            margin-bottom: 0.5rem;
+            color: #667eea;
+            margin-bottom: 0.25rem;
         }
 
         .stat-label {
-            color: #94a3b8;
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .section-count {
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.65rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+
+        .tool-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-name {
+            font-family: 'Monaco', 'Menlo', monospace;
             font-size: 0.9rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .tool-badge {
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .badge-added {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .tool-description {
+            font-size: 0.85rem;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .tool-icon {
+            display: inline-block;
+            margin-right: 0.35rem;
         }
 
         @media (max-width: 768px) {
-            .action-grid {
+            .tools-grid {
                 grid-template-columns: 1fr;
             }
 
             .header-content {
                 flex-direction: column;
                 gap: 1rem;
+                align-items: flex-start;
             }
         }
     </style>
@@ -295,557 +214,411 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <h1>⚙️ Headless Actions</h1>
+            <h1>⚙️ Headless Actions - MCP Tools Reference</h1>
             <a href="index.html" class="back-btn">← Back to Hub</a>
         </div>
     </div>
 
     <div class="container">
         <div class="intro">
-            <h2>🤖 Automated Pipeline Management</h2>
+            <h2>🤖 All 36 MCP Tools for Pipeline Management</h2>
             <p>
-                Headless actions are automated background processes that continuously monitor and maintain your data pipelines without human intervention.
-                These intelligent agents detect issues, execute repairs, and optimize performance 24/7, ensuring your data stays fresh and healthy.
+                Complete reference of all automated tools available for data pipeline management. These headless actions run in the background
+                to discover, inspect, manipulate, transform, operate, and govern your data pipelines without human intervention.
             </p>
         </div>
 
         <!-- Stats Overview -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value">12</div>
-                <div class="stat-label">Active Actions</div>
+                <div class="stat-value">36</div>
+                <div class="stat-label">Total Tools</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Scheduled</div>
+                <div class="stat-value">6</div>
+                <div class="stat-label">Categories</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">147</div>
-                <div class="stat-label">Runs Today</div>
+                <div class="stat-value">13</div>
+                <div class="stat-label">Health & Quality</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">99.2%</div>
-                <div class="stat-label">Success Rate</div>
+                <div class="stat-value">4</div>
+                <div class="stat-label">Discovery Tools</div>
             </div>
         </div>
 
-        <!-- Health Monitoring Actions -->
+        <!-- Discovery & Inspection -->
         <div class="section">
-            <h2 class="section-title">🏥 Health Monitoring</h2>
-            <div class="action-grid">
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">🔍</div>
-                        <div class="action-status active">Active</div>
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">🔍</span>
+                <h2 class="section-title">Discovery & Inspection</h2>
+                <span class="section-count">4 tools</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">list_sources / list_connectors</div>
                     </div>
-                    <h3 class="action-title">Pipeline Health Check</h3>
-                    <p class="action-description">
-                        Continuously monitors all pipelines every 5 minutes, checking data freshness, API connectivity, and error rates.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Frequency:</span>
-                            <span class="meta-value">Every 5 minutes</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Last Run:</span>
-                            <span class="meta-value">2 minutes ago</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Success Rate:</span>
-                            <span class="meta-value">100%</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Monitors:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Data Freshness</span>
-                            <span class="trigger-tag">API Status</span>
-                            <span class="trigger-tag">Error Rates</span>
-                        </div>
+                    <div class="tool-description">
+                        Enumerate every data source and connector available.
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">📊</div>
-                        <div class="action-status active">Active</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">describe_schema</div>
                     </div>
-                    <h3 class="action-title">Data Quality Validator</h3>
-                    <p class="action-description">
-                        Validates incoming data against schema rules, checks for null values, duplicates, and anomalies in real-time.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Frequency:</span>
-                            <span class="meta-value">Real-time</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Records Validated:</span>
-                            <span class="meta-value">1.2M today</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Issues Found:</span>
-                            <span class="meta-value">3 (auto-fixed)</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Validates:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Schema Compliance</span>
-                            <span class="trigger-tag">Null Checks</span>
-                            <span class="trigger-tag">Duplicates</span>
-                            <span class="trigger-tag">Anomalies</span>
-                        </div>
+                    <div class="tool-description">
+                        Return columns, types, and structure of a stream.
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">⏰</div>
-                        <div class="action-status active">Active</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">search_datasets</div>
                     </div>
-                    <h3 class="action-title">Token Expiry Monitor</h3>
-                    <p class="action-description">
-                        Tracks OAuth token expiration dates and sends alerts when tokens are expiring within 7 days. Auto-triggers renewal flow.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Frequency:</span>
-                            <span class="meta-value">Every 6 hours</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Tokens Monitored:</span>
-                            <span class="meta-value">17</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Expiring Soon:</span>
-                            <span class="meta-value">2 tokens</span>
-                        </div>
+                    <div class="tool-description">
+                        Find data by name, tag, or workspace.
                     </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Alert Thresholds:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">7 days (warning)</span>
-                            <span class="trigger-tag">3 days (urgent)</span>
-                            <span class="trigger-tag">1 day (critical)</span>
-                        </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_lineage</div>
+                    </div>
+                    <div class="tool-description">
+                        Trace upstream origins and downstream dependents.
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Auto-Repair Actions -->
+        <!-- Health & Quality -->
         <div class="section">
-            <h2 class="section-title">🔧 Auto-Repair</h2>
-            <div class="action-grid">
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">🔄</div>
-                        <div class="action-status active">Active</div>
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">🏥</span>
+                <h2 class="section-title">Health & Quality</h2>
+                <span class="section-count">13 tools</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">GetConnectors</div>
+                        <span class="tool-badge badge-added">added</span>
                     </div>
-                    <h3 class="action-title">Adaptive Rate Limiter</h3>
-                    <p class="action-description">
-                        Automatically detects rate limit errors and implements exponential backoff with jitter to prevent API throttling.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Trigger:</span>
-                            <span class="meta-value">RATE_LIMIT_EXCEEDED</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Auto-Applied:</span>
-                            <span class="meta-value">3 times today</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Success Rate:</span>
-                            <span class="meta-value">100%</span>
-                        </div>
-                    </div>
-                    <div class="code-block">
-                        <pre><code><span class="comment">// Auto-applied backoff strategy</span>
-<span class="keyword">const</span> backoff = baseDelay * (2 ** attemptNumber);
-<span class="keyword">const</span> jitter = Math.random() * <span class="number">1000</span>;
-<span class="keyword">await</span> sleep(backoff + jitter);
-</code></pre>
+                    <div class="tool-description">
+                        List all available connector types.
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">🔐</div>
-                        <div class="action-status scheduled">Scheduled</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">GetDataConnections</div>
+                        <span class="tool-badge badge-added">added</span>
                     </div>
-                    <h3 class="action-title">Auto Token Refresh</h3>
-                    <p class="action-description">
-                        Automatically refreshes OAuth tokens before expiration using stored refresh tokens to prevent pipeline disruptions.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Trigger:</span>
-                            <span class="meta-value">Token expires in 48h</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Next Run:</span>
-                            <span class="meta-value">In 23 hours</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Tokens Managed:</span>
-                            <span class="meta-value">15 active</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Refresh Strategy:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">48h before expiry</span>
-                            <span class="trigger-tag">3 retry attempts</span>
-                            <span class="trigger-tag">Fallback to manual</span>
-                        </div>
+                    <div class="tool-description">
+                        List configured data connections and their status.
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">↩️</div>
-                        <div class="action-status active">Active</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">GetDataPipelines</div>
+                        <span class="tool-badge badge-added">added</span>
                     </div>
-                    <h3 class="action-title">Smart Retry Handler</h3>
-                    <p class="action-description">
-                        Implements intelligent retry logic for transient failures with exponential backoff and circuit breaker pattern.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Max Retries:</span>
-                            <span class="meta-value">3 attempts</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Circuit Breaker:</span>
-                            <span class="meta-value">5 failures → 10min pause</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Retries Today:</span>
-                            <span class="meta-value">12 (11 successful)</span>
-                        </div>
+                    <div class="tool-description">
+                        List pipelines with their config and current state.
                     </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Retry Conditions:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Network Timeout</span>
-                            <span class="trigger-tag">503 Service Unavailable</span>
-                            <span class="trigger-tag">429 Rate Limit</span>
-                        </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">GetConnectorDetails</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Show a connector's fields, auth type, and capabilities.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">GetAuthorizationUrl</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Get the OAuth consent URL to start the authorization.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_connection_state</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        List connections and their current auth/config state.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_pipeline_status</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Last 50 runs, pass/fail, with the health trend (was 10).
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_pipeline_logs</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Pull run-level logs for one pipeline — the detail behind a status.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_pipeline_failed_rows</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Return the rows that failed to load (sample + total count).
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_pipeline_failed_dates</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        List which dates in a range failed — feeds straight into backfill.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">run_quality_check</div>
+                    </div>
+                    <div class="tool-description">
+                        Check nulls, freshness, row-count deltas, and schema drift.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">detect_anomalies</div>
+                    </div>
+                    <div class="tool-description">
+                        Flag unusual volumes or value distributions.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">check_credential_expiry</div>
+                    </div>
+                    <div class="tool-description">
+                        Surface tokens / OAuth scopes nearing expiry.
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Data Management Actions -->
+        <!-- Manipulation -->
         <div class="section">
-            <h2 class="section-title">💾 Data Management</h2>
-            <div class="action-grid">
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">🔄</div>
-                        <div class="action-status active">Active</div>
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">✏️</span>
+                <h2 class="section-title">Manipulation</h2>
+                <span class="section-count">4 tools</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">query_data</div>
                     </div>
-                    <h3 class="action-title">Auto Backfill Scheduler</h3>
-                    <p class="action-description">
-                        Automatically schedules backfill jobs for missing data windows when pipelines recover from failures.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Trigger:</span>
-                            <span class="meta-value">Pipeline recovery</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Active Jobs:</span>
-                            <span class="meta-value">2 running</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Records Backfilled:</span>
-                            <span class="meta-value">48,320 today</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Backfill Strategy:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Gap Detection</span>
-                            <span class="trigger-tag">Date Range Calc</span>
-                            <span class="trigger-tag">Priority Queue</span>
-                        </div>
+                    <div class="tool-description">
+                        Read records with filters — the safest, most-used tool.
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">🗄️</div>
-                        <div class="action-status active">Active</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">upsert_records</div>
+                        <span class="tool-badge" style="background: #fff5e6; color: #c05621;">⚠</span>
                     </div>
-                    <h3 class="action-title">Data Deduplicator</h3>
-                    <p class="action-description">
-                        Identifies and removes duplicate records based on configurable unique key combinations to maintain data integrity.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Frequency:</span>
-                            <span class="meta-value">Every 1 hour</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Duplicates Found:</span>
-                            <span class="meta-value">142 today</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Auto-Removed:</span>
-                            <span class="meta-value">142 (100%)</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Dedup Keys:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">campaign_id + date</span>
-                            <span class="trigger-tag">ad_id + timestamp</span>
-                            <span class="trigger-tag">Custom rules</span>
-                        </div>
+                    <div class="tool-description">
+                        Merge or update (preview the diff first).
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">🧹</div>
-                        <div class="action-status scheduled">Scheduled</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">delete_records</div>
+                        <span class="tool-badge" style="background: #fff5e6; color: #c05621;">⚠</span>
                     </div>
-                    <h3 class="action-title">Stale Data Archiver</h3>
-                    <p class="action-description">
-                        Archives data older than retention policy to cold storage, optimizing query performance and storage costs.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Frequency:</span>
-                            <span class="meta-value">Daily at 2:00 AM</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Retention:</span>
-                            <span class="meta-value">365 days</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Next Run:</span>
-                            <span class="meta-value">In 12 hours</span>
-                        </div>
+                    <div class="tool-description">
+                        Remove rows. Ask user to confirm after a confirmed preview.
                     </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Archive Rules:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Age > 365 days</span>
-                            <span class="trigger-tag">Compress data</span>
-                            <span class="trigger-tag">Move to GCS</span>
-                        </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">import_data / export_data</div>
+                    </div>
+                    <div class="tool-description">
+                        Load a CSV or batch into a stream / Pull records out as CSV or batch.
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Notification Actions -->
+        <!-- Transformation -->
         <div class="section">
-            <h2 class="section-title">🔔 Notifications & Alerts</h2>
-            <div class="action-grid">
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">📨</div>
-                        <div class="action-status active">Active</div>
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">🔄</span>
+                <h2 class="section-title">Transformation</h2>
+                <span class="section-count">3 tools</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">apply_classification</div>
                     </div>
-                    <h3 class="action-title">Daily Health Summary</h3>
-                    <p class="action-description">
-                        Sends comprehensive pipeline health summary to Slack every morning with key metrics and recommended actions.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Schedule:</span>
-                            <span class="meta-value">Daily at 8:00 AM</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Channel:</span>
-                            <span class="meta-value">#data-pipeline-health</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Last Sent:</span>
-                            <span class="meta-value">Today at 8:00 AM</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Includes:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Health Score</span>
-                            <span class="trigger-tag">Failed Pipelines</span>
-                            <span class="trigger-tag">Token Status</span>
-                            <span class="trigger-tag">Top Errors</span>
-                        </div>
+                    <div class="tool-description">
+                        Run mapping / classification rules over the data.
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">🚨</div>
-                        <div class="action-status active">Active</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">normalize_values</div>
                     </div>
-                    <h3 class="action-title">Critical Alert Dispatcher</h3>
-                    <p class="action-description">
-                        Immediately notifies team of critical pipeline failures with detailed context and suggested remediation.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Trigger:</span>
-                            <span class="meta-value">Critical failure</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Alerts Today:</span>
-                            <span class="meta-value">3 critical</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Response Time:</span>
-                            <span class="meta-value">< 30 seconds</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Alert Conditions:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Pipeline Failed</span>
-                            <span class="trigger-tag">Token Expired</span>
-                            <span class="trigger-tag">API Down</span>
-                            <span class="trigger-tag">Data Quality Issue</span>
-                        </div>
+                    <div class="tool-description">
+                        Clean and standardize field values.
                     </div>
                 </div>
-
-                <div class="action-card">
-                    <div class="action-header">
-                        <div class="action-icon">📊</div>
-                        <div class="action-status scheduled">Scheduled</div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">deduplicate</div>
                     </div>
-                    <h3 class="action-title">Weekly Performance Report</h3>
-                    <p class="action-description">
-                        Generates detailed weekly report with trends, insights, and recommendations for pipeline optimization.
-                    </p>
-                    <div class="action-meta">
-                        <div class="meta-row">
-                            <span class="meta-label">Schedule:</span>
-                            <span class="meta-value">Monday at 9:00 AM</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Recipients:</span>
-                            <span class="meta-value">Data Eng Team</span>
-                        </div>
-                        <div class="meta-row">
-                            <span class="meta-label">Next Report:</span>
-                            <span class="meta-value">In 4 days</span>
-                        </div>
-                    </div>
-                    <div class="action-triggers">
-                        <div class="trigger-label">Report Includes:</div>
-                        <div class="trigger-list">
-                            <span class="trigger-tag">Success Rates</span>
-                            <span class="trigger-tag">Volume Trends</span>
-                            <span class="trigger-tag">Error Analysis</span>
-                            <span class="trigger-tag">Optimization Tips</span>
-                        </div>
+                    <div class="tool-description">
+                        Collapse duplicate records.
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- API Integration Examples -->
+        <!-- Operations -->
         <div class="section">
-            <h2 class="section-title">🔌 API Integration Examples</h2>
-
-            <div class="action-card">
-                <h3 class="action-title">Trigger Headless Action via API</h3>
-                <div class="code-block">
-                    <pre><code><span class="comment">// POST /api/v1/headless-actions/trigger</span>
-<span class="keyword">const</span> response = <span class="keyword">await</span> fetch(<span class="string">'https://api.mcp-health.io/v1/headless-actions/trigger'</span>, {
-  method: <span class="string">'POST'</span>,
-  headers: {
-    <span class="string">'Authorization'</span>: <span class="string">'Bearer YOUR_API_KEY'</span>,
-    <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>
-  },
-  body: JSON.stringify({
-    action: <span class="string">'auto-backfill'</span>,
-    pipeline: <span class="string">'google-ads-apac'</span>,
-    params: {
-      startDate: <span class="string">'2026-06-14'</span>,
-      endDate: <span class="string">'2026-06-17'</span>,
-      priority: <span class="string">'high'</span>
-    }
-  })
-});
-
-<span class="keyword">const</span> result = <span class="keyword">await</span> response.json();
-<span class="comment">// { jobId: "bf-123456", status: "queued", estimatedDuration: "2h" }</span>
-</code></pre>
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">⚡</span>
+                <h2 class="section-title">Operations</h2>
+                <span class="section-count">8 tools</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">trigger_run</div>
+                    </div>
+                    <div class="tool-description">
+                        Kick off a pipeline run on demand.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">retry_failed_run</div>
+                    </div>
+                    <div class="tool-description">
+                        Rerun a failed pipeline (with auto-repair if possible).
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">reauthenticate</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Refresh or re-establish a connection's OAuth / token.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">backfill</div>
+                    </div>
+                    <div class="tool-description">
+                        Reprocess a date range — often just the failed dates.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">pause_connector / resume_connector</div>
+                    </div>
+                    <div class="tool-description">
+                        Stop or resume ingestion for a connector.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">CreateDataConnection</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Provision a new data connection to a source.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">CreateDataPipeline</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Create a new pipeline to ingest from a connection.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">CreateNamedCredential</div>
+                        <span class="tool-badge badge-added">added</span>
+                    </div>
+                    <div class="tool-description">
+                        Store a reusable named credential for authentication.
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="action-card" style="margin-top: 1.5rem;">
-                <h3 class="action-title">Monitor Action Status</h3>
-                <div class="code-block">
-                    <pre><code><span class="comment">// GET /api/v1/headless-actions/status/:jobId</span>
-<span class="keyword">const</span> status = <span class="keyword">await</span> fetch(
-  <span class="string">`https://api.mcp-health.io/v1/headless-actions/status/${jobId}`</span>,
-  {
-    headers: { <span class="string">'Authorization'</span>: <span class="string">'Bearer YOUR_API_KEY'</span> }
-  }
-);
-
-<span class="keyword">const</span> data = <span class="keyword">await</span> status.json();
-<span class="comment">// {
-//   jobId: "bf-123456",
-//   status: "running",
-//   progress: 67,
-//   recordsProcessed: 95420,
-//   recordsTotal: 142840,
-//   startedAt: "2026-06-17T13:15:00Z",
-//   estimatedCompletion: "2026-06-17T14:30:00Z"
-// }</span>
-</code></pre>
+        <!-- Governance -->
+        <div class="section">
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">🛡️</span>
+                <h2 class="section-title">Governance</h2>
+                <span class="section-count">3 tools</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">tag_dataset</div>
+                    </div>
+                    <div class="tool-description">
+                        Apply labels / tags for organization and policy.
+                    </div>
                 </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">audit_log_query</div>
+                    </div>
+                    <div class="tool-description">
+                        Look up who changed what, and when.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_retention_policy</div>
+                    </div>
+                    <div class="tool-description">
+                        Show how long data is kept for a dataset.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Note about usage -->
+        <div style="background: #fff5e6; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 8px; margin-top: 2rem;">
+            <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">⚠️ Tool Usage Guidelines</div>
+            <div style="color: #92400e; font-size: 0.9rem; line-height: 1.6;">
+                <strong>Read/write separation:</strong> Tools marked with <span style="background: #fff5e6; padding: 0.15rem 0.4rem; border-radius: 4px;">⚠</span> modify data.
+                Always preview changes before applying. Tools with <span style="background: #c6f6d5; color: #22543d; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600;">added</span>
+                are newly available in this release.
             </div>
         </div>
     </div>
-
-    <script>
-        // Add smooth scroll behavior
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Animate stat cards on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '0';
-                    entry.target.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        entry.target.style.transition = 'all 0.5s ease';
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }, 100);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.action-card, .stat-card').forEach(card => {
-            observer.observe(card);
-        });
-    </script>
 </body>
 </html>
