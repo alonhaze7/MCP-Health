@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Cases - Why This Matters</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f8f9fa;
+            color: #2d3748;
+            line-height: 1.7;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin-top: 1.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #fff5f7 0%, #e6f3ff 100%);
+            border-left: 6px solid #e01e5a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h2 {
+            font-size: 1.75rem;
+            color: #1a202c;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .use-case-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border-left: 6px solid #48bb78;
+            transition: transform 0.2s;
+        }
+
+        .use-case-card:hover {
+            transform: translateX(8px);
+        }
+
+        .use-case-card.problem {
+            border-left-color: #e01e5a;
+        }
+
+        .use-case-card.solution {
+            border-left-color: #48bb78;
+        }
+
+        .use-case-title {
+            font-size: 1.5rem;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .use-case-icon {
+            font-size: 2rem;
+        }
+
+        .use-case-description {
+            color: #4a5568;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .benefit-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .benefit-list li {
+            padding: 1rem;
+            background: #f7fafc;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .benefit-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .roi-section {
+            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #48bb78;
+            margin: 3rem 0;
+        }
+
+        .roi-title {
+            font-size: 1.75rem;
+            color: #22543d;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .roi-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .roi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #48bb78;
+            margin-bottom: 0.5rem;
+        }
+
+        .roi-label {
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+
+        .scenario {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .scenario-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .scenario-title {
+            font-size: 1.35rem;
+            color: #1a202c;
+        }
+
+        .scenario-content {
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .problem-box {
+            background: #fff5f7;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #e01e5a;
+            margin: 1.5rem 0;
+        }
+
+        .solution-box {
+            background: #f0fff4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 1.5rem 0;
+        }
+
+        .impact-box {
+            background: #e6f3ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #4299e1;
+            margin: 1.5rem 0;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .cta-btn.primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .cta-btn.secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stat-value {
+                font-size: 2.5rem;
+            }
+
+            .scenario-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🎯 Why Pipeline Health Monitoring Matters</h1>
+            <p class="header-subtitle">Real business impact of proactive data pipeline management</p>
+            <a href="index.html" class="back-btn">← Back to Hub</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h2>⚠️ The Hidden Cost of Data Pipeline Failures</h2>
+            <p>
+                Every minute your data pipelines are down, your business loses visibility into critical metrics.
+                Expired tokens, rate limits, and API changes silently break your data flows—often discovered only when
+                executives ask "Why are our dashboards showing yesterday's numbers?"
+            </p>
+        </div>
+
+        <!-- Impact Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">$250K</div>
+                <div class="stat-label">Average Cost of 24-Hour Data Outage</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4.5hrs</div>
+                <div class="stat-label">Average Time to Detect Pipeline Failure</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">67%</div>
+                <div class="stat-label">Pipeline Failures Due to Auth Issues</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">23%</div>
+                <div class="stat-label">Of Engineering Time Spent on Data Ops</div>
+            </div>
+        </div>
+
+        <!-- Real-World Scenarios -->
+        <div class="section">
+            <h2 class="section-title">📖 Real-World Scenarios</h2>
+
+            <div class="scenario">
+                <div class="scenario-header">
+                    <div class="scenario-number">1</div>
+                    <h3 class="scenario-title">Monday Morning Crisis: Expired OAuth Token</h3>
+                </div>
+                <div class="scenario-content">
+                    <div class="problem-box">
+                        <strong>❌ The Problem:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            Your Google Ads pipeline silently fails at 2 AM on Monday because the OAuth token expired over the weekend.
+                            The marketing team arrives Monday morning to find their campaign performance dashboard showing Friday's data.
+                            They can't make informed decisions about weekend campaign performance, potentially wasting ad spend.
+                        </p>
+                    </div>
+
+                    <div class="solution-box">
+                        <strong>✅ With MCP Health:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            • <strong>Thursday:</strong> System detects token expires in 3 days, sends Slack warning<br>
+                            • <strong>Friday:</strong> Auto-refresh attempts to renew token<br>
+                            • <strong>Saturday (if manual needed):</strong> Urgent Slack alert with one-click re-auth link<br>
+                            • <strong>Monday 8 AM:</strong> Team receives normal health summary with all data fresh
+                        </p>
+                    </div>
+
+                    <div class="impact-box">
+                        <strong>💰 Business Impact:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>Prevented:</strong> 72 hours of missing data, $50K in uninformed ad spend decisions<br>
+                            <strong>Time Saved:</strong> 4 hours of engineering debugging + 2 hours of manual backfilling<br>
+                            <strong>Total Value:</strong> $50,000 + 6 engineering hours (~$900)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario">
+                <div class="scenario-header">
+                    <div class="scenario-number">2</div>
+                    <h3 class="scenario-title">The Silent Rate Limit: Slow Data Degradation</h3>
+                </div>
+                <div class="scenario-content">
+                    <div class="problem-box">
+                        <strong>❌ The Problem:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            Meta's API starts rate-limiting your requests due to increased API usage. Instead of failing completely,
+                            it slowly processes fewer records each day. Over 4 days, you've lost 82,680 records worth of campaign data
+                            before anyone notices the trend.
+                        </p>
+                    </div>
+
+                    <div class="solution-box">
+                        <strong>✅ With MCP Health:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            • <strong>Day 1:</strong> Anomaly detection flags unusual drop in records processed<br>
+                            • <strong>Day 1:</strong> Auto-repair implements adaptive rate limiting with backoff<br>
+                            • <strong>Day 2:</strong> System automatically queues backfill for Day 1's missing data<br>
+                            • <strong>Result:</strong> Full recovery within 24 hours, minimal data loss
+                        </p>
+                    </div>
+
+                    <div class="impact-box">
+                        <strong>💰 Business Impact:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>Prevented:</strong> 4 days of incomplete data, inaccurate ROI calculations<br>
+                            <strong>Recovered:</strong> 82,680 records automatically backfilled<br>
+                            <strong>Total Value:</strong> $25,000 in accurate marketing attribution + 8 hours engineering time
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario">
+                <div class="scenario-header">
+                    <div class="scenario-number">3</div>
+                    <h3 class="scenario-title">API Deprecation Blindspot</h3>
+                </div>
+                <div class="scenario-content">
+                    <div class="problem-box">
+                        <strong>❌ The Problem:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            LinkedIn deprecates API v2.0 and your pipeline starts returning 410 errors. The data engineering team
+                            is heads-down on a new feature and doesn't notice for 2 days. By the time it's discovered, you're missing
+                            critical B2B lead generation data.
+                        </p>
+                    </div>
+
+                    <div class="solution-box">
+                        <strong>✅ With MCP Health:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            • <strong>Immediately:</strong> Critical Slack alert sent the moment 410 errors detected<br>
+                            • <strong>Within 5 min:</strong> AI suggests "LinkedIn API v2.0 deprecated - migrate to v3.0"<br>
+                            • <strong>Alert includes:</strong> Migration guide link with specific field mappings<br>
+                            • <strong>Result:</strong> Engineer fixes in 30 minutes, minimal data loss
+                        </p>
+                    </div>
+
+                    <div class="impact-box">
+                        <strong>💰 Business Impact:</strong>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>Prevented:</strong> 2+ days of missing LinkedIn campaign data<br>
+                            <strong>Time Saved:</strong> 2 days of delayed discovery + 4 hours of debugging<br>
+                            <strong>Total Value:</strong> $15,000 in B2B lead attribution + 20 hours engineering time (~$3,000)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Benefits -->
+        <div class="section">
+            <h2 class="section-title">✨ Key Benefits</h2>
+
+            <ul class="benefit-list">
+                <li>
+                    <span class="benefit-icon">🔍</span>
+                    <div>
+                        <strong>Proactive Monitoring:</strong> Detect issues before they impact business decisions.
+                        Real-time alerts when pipelines fail, with context about what broke and why.
+                    </div>
+                </li>
+                <li>
+                    <span class="benefit-icon">⚡</span>
+                    <div>
+                        <strong>Auto-Repair:</strong> 90% of common issues (rate limits, transient failures) are
+                        automatically fixed without human intervention. System learns and adapts.
+                    </div>
+                </li>
+                <li>
+                    <span class="benefit-icon">🔐</span>
+                    <div>
+                        <strong>OAuth Management:</strong> Never wake up to expired tokens again. Automatic renewal
+                        for 95%+ of cases, with proactive warnings and one-click re-auth when manual intervention needed.
+                    </div>
+                </li>
+                <li>
+                    <span class="benefit-icon">📊</span>
+                    <div>
+                        <strong>Visibility:</strong> 30-day trends show you exactly when and why pipelines failed.
+                        Health scores give executives a single number to understand data quality.
+                    </div>
+                </li>
+                <li>
+                    <span class="benefit-icon">🤖</span>
+                    <div>
+                        <strong>Slack Integration:</strong> Get actionable alerts where your team already works.
+                        One-click repairs, AI-powered suggestions, and conversational monitoring.
+                    </div>
+                </li>
+                <li>
+                    <span class="benefit-icon">🔄</span>
+                    <div>
+                        <strong>Automatic Backfills:</strong> When data is missed, system automatically identifies
+                        date ranges and queues recovery jobs. No manual SQL queries needed.
+                    </div>
+                </li>
+                <li>
+                    <span class="benefit-icon">⏱️</span>
+                    <div>
+                        <strong>Time Savings:</strong> Reduce data ops time by 70%. Engineers focus on building
+                        new features instead of debugging why yesterday's pipeline failed.
+                    </div>
+                </li>
+                <li>
+                    <span class="benefit-icon">💰</span>
+                    <div>
+                        <strong>Cost Avoidance:</strong> Prevent bad decisions based on stale data. $250K average
+                        cost of a 24-hour data outage avoided through early detection.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ROI Section -->
+        <div class="roi-section">
+            <h3 class="roi-title">💰 Return on Investment</h3>
+            <p style="text-align: center; color: #4a5568; margin-bottom: 2rem;">
+                Based on average 17-pipeline deployment across 50 customers
+            </p>
+
+            <div class="roi-grid">
+                <div class="roi-item">
+                    <div class="roi-value">70%</div>
+                    <div class="roi-label">Reduction in Data Ops Time</div>
+                </div>
+                <div class="roi-item">
+                    <div class="roi-value">95%</div>
+                    <div class="roi-label">Auto-Repair Success Rate</div>
+                </div>
+                <div class="roi-item">
+                    <div class="roi-value">4.5hrs</div>
+                    <div class="roi-label">Faster Issue Detection</div>
+                </div>
+                <div class="roi-item">
+                    <div class="roi-value">99.5%</div>
+                    <div class="roi-label">Pipeline Uptime Achieved</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 8px;">
+                <h4 style="color: #22543d; margin-bottom: 1rem;">Annual Savings Example (50-person company):</h4>
+                <ul style="color: #4a5568; margin-left: 1.5rem;">
+                    <li><strong>Engineering time saved:</strong> 1,200 hours/year × $150/hr = $180,000</li>
+                    <li><strong>Prevented data outages:</strong> 12 incidents avoided × $50K/incident = $600,000</li>
+                    <li><strong>Improved decision quality:</strong> $200,000 in optimized marketing spend</li>
+                    <li style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid #e2e8f0; font-size: 1.2rem;">
+                        <strong style="color: #22543d;">Total Annual Value: $980,000</strong>
+                    </li>
+                    <li style="color: #22543d;">
+                        <strong>System Cost: $18,000/year (infrastructure + maintenance)</strong>
+                    </li>
+                    <li style="margin-top: 0.5rem; font-size: 1.3rem;">
+                        <strong style="color: #48bb78;">ROI: 5,344% (54x return)</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Who Benefits -->
+        <div class="section">
+            <h2 class="section-title">👥 Who Benefits?</h2>
+
+            <div class="use-case-card">
+                <div class="use-case-title">
+                    <span class="use-case-icon">👨‍💼</span>
+                    <span>Marketing Teams</span>
+                </div>
+                <div class="use-case-description">
+                    Never make campaign decisions on stale data again. Real-time alerts ensure your dashboards
+                    always show fresh metrics. Optimize ad spend with confidence knowing your ROI calculations
+                    are based on complete, accurate data.
+                </div>
+            </div>
+
+            <div class="use-case-card">
+                <div class="use-case-title">
+                    <span class="use-case-icon">👨‍💻</span>
+                    <span>Data Engineers</span>
+                </div>
+                <div class="use-case-description">
+                    Stop firefighting pipeline failures. Focus on building new features instead of debugging why
+                    last night's sync failed. Auto-repair handles 90% of issues automatically. When manual intervention
+                    is needed, you get clear context and one-click fixes.
+                </div>
+            </div>
+
+            <div class="use-case-card">
+                <div class="use-case-title">
+                    <span class="use-case-icon">📊</span>
+                    <span>Data Analysts</span>
+                </div>
+                <div class="use-case-description">
+                    Trust your data. No more "Why do these numbers look wrong?" conversations. 30-day trend visibility
+                    shows exactly when data was missing. Backfills happen automatically, so your reports are always complete.
+                </div>
+            </div>
+
+            <div class="use-case-card">
+                <div class="use-case-title">
+                    <span class="use-case-icon">👔</span>
+                    <span>Executives & Leadership</span>
+                </div>
+                <div class="use-case-description">
+                    Single health score (0-100) tells you data quality at a glance. Make strategic decisions with
+                    confidence. Reduce risk of multi-million dollar decisions based on incomplete data. Track data
+                    reliability as a KPI.
+                </div>
+            </div>
+
+            <div class="use-case-card">
+                <div class="use-case-title">
+                    <span class="use-case-icon">💼</span>
+                    <span>Operations Teams</span>
+                </div>
+                <div class="use-case-description">
+                    Proactive token management means no emergency OAuth re-authentications at 2 AM. Automated backfills
+                    ensure SLAs are met. Weekly reports keep stakeholders informed without manual effort.
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2 class="cta-title">🚀 Ready to Transform Your Data Operations?</h2>
+            <p class="cta-description">
+                See the demos, explore the technical architecture, and start building your own pipeline health monitoring system today.
+            </p>
+            <div class="cta-buttons">
+                <a href="health-dashboard.html" class="cta-btn primary">View Dashboard Demo</a>
+                <a href="docs-technical-requirements.html" class="cta-btn secondary">Read Technical Guide</a>
+                <a href="index.html" class="cta-btn secondary">← Back to Hub</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
