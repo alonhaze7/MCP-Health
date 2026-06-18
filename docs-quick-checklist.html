@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Implementation Checklist - MCP Health</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f8f9fa;
+            color: #2d3748;
+            line-height: 1.7;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+            min-height: calc(100vh - 120px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #1a202c;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+            border-left: 4px solid #667eea;
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: #4a5568;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #4a5568;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        code {
+            background: #f7fafc;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            color: #e01e5a;
+        }
+
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+
+        pre code {
+            background: transparent;
+            color: #e2e8f0;
+            padding: 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e2e8f0;
+            margin: 2rem 0;
+        }
+
+        strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            pre {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1 style="margin: 0; font-size: 1.5rem; border: none; padding: 0;">Quick Implementation Checklist</h1>
+            <a href="index.html" class="back-btn">← Back to Hub</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>MCP Health - Quick Implementation Checklist</h1>
+
+<strong>Use this checklist to track your progress implementing all demo features</strong>
+
+<hr>
+
+<h2>🗄️ Database Setup</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label>Create <code>pipelines</code> table</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Create <code>pipeline_runs</code> table with 30-day history</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Create <code>pipeline_credentials</code> table (encrypted tokens)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Create <code>pipeline_health_metrics</code> table</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Create <code>failed_run_dates</code> table (for backfill tracking)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Create <code>pipeline_alerts</code> table</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Set up indexes for performance</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Implement encryption for sensitive data</label></div>
+
+<hr>
+
+<h2>🔌 Core API Endpoints</h2>
+
+<h3>Health & Status</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GET /api/dashboard/summary</code> - Overall health stats</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GET /api/dashboard/pipelines</code> - All pipelines with 30-day trends</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GET /api/dashboard/recent-alerts</code> - Last 3 critical alerts</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GET /api/mcp/pipeline/{id}/status</code> - Pipeline run history</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GET /api/mcp/pipeline/{id}/logs</code> - Detailed logs</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GET /api/mcp/pipeline/{id}/failed-dates</code> - List failed dates</label></div>
+
+<h3>Actions</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>POST /api/dashboard/reprocess</code> - Trigger backfill</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>POST /api/dashboard/reauthenticate</code> - Generate OAuth URL</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>POST /api/mcp/trigger-run</code> - Manual pipeline run</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>POST /api/mcp/backfill</code> - Queue backfill jobs</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>POST /api/mcp/pause</code> - Pause pipeline</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>POST /api/mcp/resume</code> - Resume pipeline</label></div>
+
+<h3>Credentials</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GET /api/mcp/credentials/{id}/expiry</code> - Check token expiration</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>POST /api/mcp/refresh-token</code> - Auto-refresh OAuth token</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>OAuth callback handler <code>/oauth/callback</code></label></div>
+
+<hr>
+
+<h2>💬 Slack Integration</h2>
+
+<h3>Bot Setup</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Create Slack app at api.slack.com</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Add bot permissions: <code>chat:write</code>, <code>files:write</code>, <code>reactions:write</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Install bot to workspace</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Get bot OAuth token</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Configure webhook URL for interactions</label></div>
+
+<h3>Message Types</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Daily summary (8:00 AM) with health score</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Critical alert messages (real-time on failure)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Weekly performance report (Monday 9:00 AM)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Token expiry warnings (when <3 days)</label></div>
+
+<h3>Interactive Features</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>"Full Report" button → Opens dashboard link</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>"Repair All Failed" button → Confirms and queues backfills</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>"Auto-Repair" button per pipeline → Triggers reprocess</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>"View Logs" button → Shows formatted logs in modal</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>"Re-authenticate" button → Opens OAuth flow</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Conversational AI (@mention bot for queries)</label></div>
+
+<hr>
+
+<h2>🔄 Background Jobs (Cron/Scheduler)</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Pipeline Health Monitor</strong> (every 5 min)</label></div>
+<p>  - Query all pipeline statuses</p>
+<p>  - Calculate 30-day success rates</p>
+<p>  - Update health scores</p>
+<p>  - Trigger alerts if critical</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Token Expiry Checker</strong> (every 6 hours)</label></div>
+<p>  - Check all OAuth tokens</p>
+<p>  - Create alerts for tokens expiring <7 days</p>
+<p>  - Send urgent notifications for <2 days</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Auto Token Refresher</strong> (every 12 hours)</label></div>
+<p>  - Refresh tokens expiring in <48 hours</p>
+<p>  - Update credentials in database</p>
+<p>  - Resume paused pipelines</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Daily Slack Summary</strong> (8:00 AM daily)</label></div>
+<p>  - Calculate overnight stats</p>
+<p>  - Generate summary card</p>
+<p>  - Post to #data-pipeline-health</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Data Quality Checker</strong> (every 1 hour)</label></div>
+<p>  - Validate schema compliance</p>
+<p>  - Check for nulls/duplicates</p>
+<p>  - Flag anomalies</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Deduplicator</strong> (every 1 hour)</label></div>
+<p>  - Find duplicate records</p>
+<p>  - Remove based on unique keys</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Stale Data Archiver</strong> (2:00 AM daily)</label></div>
+<p>  - Archive data >365 days old</p>
+<p>  - Move to cold storage</p>
+
+<hr>
+
+<h2>🔧 Auto-Repair Logic</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Adaptive Rate Limiter</strong></label></div>
+<p>  - Detect <code>RATE_LIMIT_EXCEEDED</code> errors</p>
+<p>  - Calculate exponential backoff with jitter</p>
+<p>  - Update pipeline config</p>
+<p>  - Reschedule with delay</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Smart Retry Handler</strong></label></div>
+<p>  - Identify retryable errors (network, 503, 429)</p>
+<p>  - Track retry count (max 3)</p>
+<p>  - Circuit breaker: pause after 5 failures in 10 min</p>
+<p>  - Send alerts when retries exhausted</p>
+
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Auto Token Refresh</strong></label></div>
+<p>  - Detect tokens expiring <48 hours</p>
+<p>  - Call OAuth provider with refresh_token</p>
+<p>  - Update database with new tokens</p>
+<p>  - Fallback to manual auth if refresh fails</p>
+
+<hr>
+
+<h2>📊 Dashboard Features</h2>
+
+<h3>Summary Card</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Overall health score (0-100)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Status counts (🟢 healthy, 🟡 warning, 🔴 critical)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Total pipelines count</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>"View Issues" button</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>"Export Report" button</label></div>
+
+<h3>Metric Cards (Top Row)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Data Volume (24h) with 7-day trend line</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Pipeline Status donut chart (82% healthy)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Success Rate with % change indicator</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Active Syncs count</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Avg Sync Time</label></div>
+
+<h3>Recent Alerts Section</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Show last 3 critical failures</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Display error type, records affected, days ago</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Color-coded by severity</label></div>
+
+<h3>Pipeline Table</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Pipeline Name (clickable for details)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Data Space (Marketing-US, Social-EMEA, etc.)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Status badge with color coding</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Records Today count</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Success Rate with progress bar</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><strong>30-Day Trend</strong> sparkline (sampled every 4 days)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Last Run timestamp</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><strong>Actions column:</strong></label></div>
+<p>  - 🔐 Re-authenticate (orange) for token expired</p>
+<p>  - 🔄 Reprocess (red) for other failures</p>
+<p>  - 📊 Details (white) for warnings</p>
+<p>  - — for healthy pipelines</p>
+
+<h3>Interactive Actions</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Click pipeline row → Show detailed modal</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Re-authenticate button → OAuth flow modal</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Reprocess button → Confirmation with estimated time</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Details button → Show warning info</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Export button → Download CSV report</label></div>
+
+<hr>
+
+<h2>⚙️ MCP Tools (36 Total)</h2>
+
+<h3>Discovery & Inspection (4)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>list_sources</code> / <code>list_connectors</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>describe_schema</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>search_datasets</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>get_lineage</code></label></div>
+
+<h3>Health & Quality (13)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GetConnectors</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GetDataConnections</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GetDataPipelines</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GetConnectorDetails</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>GetAuthorizationUrl</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>get_connection_state</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>get_pipeline_status</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>get_pipeline_logs</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>get_pipeline_failed_rows</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>get_pipeline_failed_dates</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>run_quality_check</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>detect_anomalies</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>check_credential_expiry</code></label></div>
+
+<h3>Manipulation (4)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>query_data</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>upsert_records</code> (with preview)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>delete_records</code> (requires confirmation)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>import_data</code> / <code>export_data</code></label></div>
+
+<h3>Transformation (3)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>apply_classification</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>normalize_values</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>deduplicate</code></label></div>
+
+<h3>Operations (8)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>trigger_run</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>retry_failed_run</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>reauthenticate</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>backfill</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>pause_connector</code> / <code>resume_connector</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>CreateDataConnection</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>CreateDataPipeline</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>CreateNamedCredential</code></label></div>
+
+<h3>Governance (3)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label><code>tag_dataset</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>audit_log_query</code></label></div>
+<div class="checkbox-item"><input type="checkbox" ><label><code>get_retention_policy</code></label></div>
+
+<hr>
+
+<h2>🔐 Security & Auth</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label>Implement OAuth 2.0 for each provider:</label></div>
+<p>  - [ ] Google Ads API</p>
+<p>  - [ ] Meta Marketing API</p>
+<p>  - [ ] LinkedIn API</p>
+<p>  - [ ] TikTok Ads API</p>
+<div class="checkbox-item"><input type="checkbox" ><label>Encrypt tokens at rest (AES-256)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Use TLS 1.3 for all API calls</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Implement CSRF protection (state parameter)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Set up JWT for dashboard API auth</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Configure API rate limiting (1000 req/hour)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Set up secret rotation schedule</label></div>
+
+<hr>
+
+<h2>📈 Monitoring & Alerts</h2>
+
+<h3>Metrics to Track</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Pipeline run duration (histogram)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Success rate by pipeline (gauge)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Records processed per second (counter)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>API response time p95 (histogram)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Error count by type (counter)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Token refresh success rate (gauge)</label></div>
+
+<h3>Alert Rules</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Pipeline down >2 hours → PagerDuty</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Success rate <95% for 24h → Slack</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Token expires in 2 days → Slack</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Circuit breaker triggered → Slack</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Backfill queue >100 jobs → Warning</label></div>
+
+<h3>Logging</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Structured JSON logs</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Include trace_id for request tracking</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Log all pipeline runs (success/failure)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Log all OAuth events</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Log all API calls with latency</label></div>
+
+<hr>
+
+<h2>🧪 Testing</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label>Unit tests for all API endpoints</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Unit tests for auto-repair logic</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Integration tests for OAuth flow</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Integration tests for Slack notifications</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Load tests: 1000 concurrent pipelines</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Load tests: 10,000 API requests/minute</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Test token refresh automation</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Test backfill process end-to-end</label></div>
+
+<hr>
+
+<h2>📝 Documentation</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label>API documentation (OpenAPI/Swagger)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>OAuth setup guide per provider</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Slack bot installation guide</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Database schema diagram</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Architecture diagram</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Deployment runbook</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>User guide for dashboard</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Troubleshooting guide</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>MCP tools reference (✅ done!)</label></div>
+
+<hr>
+
+<h2>🚀 Deployment</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label>Set up CI/CD pipeline</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Configure staging environment</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Configure production environment</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Set up database backups (daily)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Set up monitoring dashboards</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Configure autoscaling rules</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Set up log aggregation</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Configure alerting channels</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Create disaster recovery plan</label></div>
+
+<hr>
+
+<h2>📊 Data Requirements</h2>
+
+<h3>Historical Data Needed</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>30 days of pipeline run history</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>30 days of success/failure metrics</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>All active OAuth credentials</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Current pipeline configurations</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Data space mappings</label></div>
+
+<h3>Seed Data for Demo</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>17 sample pipelines</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>3 failed pipelines with different errors</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>2 warning pipelines</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>12 healthy pipelines</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>30-day trend data for each</label></div>
+
+<hr>
+
+<h2>✅ MVP Milestone Checklist</h2>
+
+<strong>Minimum features for first launch:</strong>
+
+<div class="checkbox-item"><input type="checkbox" ><label>Database with core tables</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>10 essential API endpoints</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Basic Slack daily summary</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Pipeline health monitor (cron)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Dashboard showing all pipelines</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>30-day trend visualization</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Re-authenticate button for token failures</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Reprocess button for other failures</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>OAuth callback handler</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Basic auto-repair (rate limiter)</label></div>
+
+<strong>Target:</strong> 8-10 weeks for MVP
+
+<hr>
+
+<h2>🎯 Success Criteria</h2>
+
+<p>After implementation, you should have:</p>
+
+<p>✅ Dashboard showing real-time status of all 17 pipelines  </p>
+<p>✅ 30-day historical trends visualized  </p>
+<p>✅ Automatic daily Slack summaries at 8:00 AM  </p>
+<p>✅ Real-time Slack alerts for critical failures  </p>
+<p>✅ One-click re-authentication for expired tokens  </p>
+<p>✅ One-click reprocessing for failed runs  </p>
+<p>✅ Auto-repair handling 90%+ of transient failures  </p>
+<p>✅ Token refresh happening automatically before expiry  </p>
+<p>✅ All 36 MCP tools documented and implemented  </p>
+<p>✅ <2 second dashboard load time  </p>
+<p>✅ >99.5% system uptime  </p>
+
+<hr>
+
+<h2>📞 Next Steps</h2>
+
+<p>1. <strong>Set up development environment</strong></p>
+<p>   ``<code>bash</p>
+<p>   git clone <your-repo></p>
+<p>   cd mcp-health</p>
+<p>   npm install  # or pip install -r requirements.txt</p>
+   </code>`<code>
+
+<p>2. <strong>Create database</strong></p>
+   </code>`<code>bash
+<p>   createdb mcp_health</p>
+<p>   psql mcp_health < schema.sql</p>
+   </code>`<code>
+
+<p>3. <strong>Configure environment variables</strong></p>
+   </code>`<code>bash
+<p>   cp .env.example .env</p>
+<p>   # Add your Slack token, OAuth credentials, etc.</p>
+   </code>``
+
+<p>4. <strong>Start with MVP features</strong></p>
+<p>   - Begin with database + basic API</p>
+<p>   - Add Slack integration</p>
+<p>   - Build dashboard</p>
+<p>   - Implement auto-repair</p>
+<p>   - Add remaining MCP tools</p>
+
+<p>5. <strong>Track progress using this checklist</strong></p>
+<p>   - Check off items as you complete them</p>
+<p>   - Update estimates based on actual progress</p>
+<p>   - Celebrate milestones! 🎉</p>
+
+<hr>
+
+<strong>Estimated Total Effort:</strong> 4-6 months with 2-3 engineers  
+<strong>Your demos are already built</strong> — now bring them to life with real data! 🚀
+
+    </div>
+</body>
+</html>

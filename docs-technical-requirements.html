@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Requirements - MCP Health</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f8f9fa;
+            color: #2d3748;
+            line-height: 1.7;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+            min-height: calc(100vh - 120px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #1a202c;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+            border-left: 4px solid #667eea;
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: #4a5568;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #4a5568;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        code {
+            background: #f7fafc;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            color: #e01e5a;
+        }
+
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 4px solid #667eea;
+        }
+
+        pre code {
+            background: transparent;
+            color: #e2e8f0;
+            padding: 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e2e8f0;
+            margin: 2rem 0;
+        }
+
+        strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            pre {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1 style="margin: 0; font-size: 1.5rem; border: none; padding: 0;">Technical Requirements</h1>
+            <a href="index.html" class="back-btn">← Back to Hub</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>MCP Health - Technical Implementation Requirements</h1>
+
+<strong>Date:</strong> June 17, 2026  
+<strong>Purpose:</strong> Complete technical checklist for implementing all features shown in the demos
+
+<hr>
+
+<h2>📊 1. Data Models & Database Schema</h2>
+
+<h3>Pipeline Entity</h3>
+<pre><code>CREATE TABLE pipelines (
+<p>    id UUID PRIMARY KEY,</p>
+<p>    name VARCHAR(255) NOT NULL,</p>
+<p>    data_space VARCHAR(100) NOT NULL,</p>
+<p>    connector_type VARCHAR(50) NOT NULL,</p>
+<p>    status ENUM(&#x27;healthy&#x27;, &#x27;warning&#x27;, &#x27;critical&#x27;) NOT NULL,</p>
+<p>    created_at TIMESTAMP DEFAULT NOW(),</p>
+<p>    updated_at TIMESTAMP DEFAULT NOW()</p>
+<p>);</code></pre></p>
+
+<h3>Pipeline Runs</h3>
+<pre><code>CREATE TABLE pipeline_runs (
+<p>    id UUID PRIMARY KEY,</p>
+<p>    pipeline_id UUID REFERENCES pipelines(id),</p>
+<p>    run_date DATE NOT NULL,</p>
+<p>    status ENUM(&#x27;success&#x27;, &#x27;failed&#x27;, &#x27;running&#x27;, &#x27;queued&#x27;) NOT NULL,</p>
+<p>    records_processed INTEGER DEFAULT 0,</p>
+<p>    records_failed INTEGER DEFAULT 0,</p>
+<p>    error_code VARCHAR(50),</p>
+<p>    error_message TEXT,</p>
+<p>    started_at TIMESTAMP,</p>
+<p>    completed_at TIMESTAMP,</p>
+<p>    duration_seconds INTEGER,</p>
+<p>    INDEX idx_pipeline_date (pipeline_id, run_date),</p>
+<p>    INDEX idx_status_date (status, run_date)</p>
+<p>);</code></pre></p>
+
+<h3>Authentication Tokens</h3>
+<pre><code>CREATE TABLE pipeline_credentials (
+<p>    id UUID PRIMARY KEY,</p>
+<p>    pipeline_id UUID REFERENCES pipelines(id),</p>
+<p>    credential_type ENUM(&#x27;oauth2&#x27;, &#x27;api_key&#x27;, &#x27;basic_auth&#x27;) NOT NULL,</p>
+<p>    access_token TEXT ENCRYPTED,</p>
+<p>    refresh_token TEXT ENCRYPTED,</p>
+<p>    token_expires_at TIMESTAMP,</p>
+<p>    scopes TEXT[],</p>
+<p>    is_active BOOLEAN DEFAULT true,</p>
+<p>    last_refreshed_at TIMESTAMP,</p>
+<p>    created_at TIMESTAMP DEFAULT NOW()</p>
+<p>);</code></pre></p>
+
+<h3>Health Metrics</h3>
+<pre><code>CREATE TABLE pipeline_health_metrics (
+<p>    id UUID PRIMARY KEY,</p>
+<p>    pipeline_id UUID REFERENCES pipelines(id),</p>
+<p>    metric_date DATE NOT NULL,</p>
+<p>    success_rate DECIMAL(5,2),</p>
+<p>    records_processed INTEGER,</p>
+<p>    avg_duration_seconds INTEGER,</p>
+<p>    error_count INTEGER,</p>
+<p>    UNIQUE(pipeline_id, metric_date)</p>
+<p>);</code></pre></p>
+
+<h3>Failed Runs (for backfill tracking)</h3>
+<pre><code>CREATE TABLE failed_run_dates (
+<p>    id UUID PRIMARY KEY,</p>
+<p>    pipeline_id UUID REFERENCES pipelines(id),</p>
+<p>    failed_date DATE NOT NULL,</p>
+<p>    error_code VARCHAR(50),</p>
+<p>    records_affected INTEGER,</p>
+<p>    backfill_status ENUM(&#x27;pending&#x27;, &#x27;queued&#x27;, &#x27;processing&#x27;, &#x27;completed&#x27;, &#x27;failed&#x27;),</p>
+<p>    backfill_started_at TIMESTAMP,</p>
+<p>    backfill_completed_at TIMESTAMP,</p>
+<p>    UNIQUE(pipeline_id, failed_date)</p>
+<p>);</code></pre></p>
+
+<h3>Alerts & Notifications</h3>
+<pre><code>CREATE TABLE pipeline_alerts (
+<p>    id UUID PRIMARY KEY,</p>
+<p>    pipeline_id UUID REFERENCES pipelines(id),</p>
+<p>    alert_type ENUM(&#x27;token_expiry&#x27;, &#x27;pipeline_failure&#x27;, &#x27;rate_limit&#x27;, &#x27;api_deprecated&#x27;, &#x27;quality_issue&#x27;) NOT NULL,</p>
+<p>    severity ENUM(&#x27;info&#x27;, &#x27;warning&#x27;, &#x27;critical&#x27;) NOT NULL,</p>
+<p>    message TEXT NOT NULL,</p>
+<p>    metadata JSONB,</p>
+<p>    is_resolved BOOLEAN DEFAULT false,</p>
+<p>    resolved_at TIMESTAMP,</p>
+<p>    created_at TIMESTAMP DEFAULT NOW(),</p>
+<p>    notified_at TIMESTAMP,</p>
+<p>    INDEX idx_unresolved (is_resolved, created_at)</p>
+<p>);</code></pre></p>
+
+<hr>
+
+<h2>🔄 2. Real-Time Monitoring System</h2>
+
+<h3>Required Components</h3>
+
+<p>#### A. Pipeline Health Monitor (every 5 minutes)</p>
+<strong>Technology:</strong> Cron job / Kubernetes CronJob / AWS EventBridge
+
+<strong>Tasks:</strong>
+<ul><li>Query all pipelines for latest run status</li>
+<li>Calculate success rates (last 30 days)</li>
+<li>Check for stale data (last_run > threshold)</li>
+<li>Update pipeline status (healthy/warning/critical)</li>
+<li>Generate health score (0-100)</li>
+</ul>
+<strong>Implementation:</strong>
+<pre><code># pseudocode
+<p>def monitor_pipeline_health():</p>
+<p>    for pipeline in get_all_pipelines():</p>
+<p>        # Check last run</p>
+<p>        last_run = get_latest_run(pipeline.id)</p>
+        
+<p>        # Calculate 30-day metrics</p>
+<p>        metrics = calculate_30_day_metrics(pipeline.id)</p>
+        
+<p>        # Determine status</p>
+<p>        status = determine_status(</p>
+<p>            success_rate=metrics.success_rate,</p>
+<p>            last_run_time=last_run.completed_at,</p>
+<p>            error_code=last_run.error_code</p>
+<p>        )</p>
+        
+<p>        # Update database</p>
+<p>        update_pipeline_status(pipeline.id, status, metrics)</p>
+        
+<p>        # Trigger alerts if needed</p>
+<p>        if status == &#x27;critical&#x27;:</p>
+<p>            create_alert(pipeline.id, last_run.error_code)</code></pre></p>
+
+<p>#### B. Token Expiry Monitor (every 6 hours)</p>
+<strong>Tasks:</strong>
+<ul><li>Check all OAuth tokens for expiration</li>
+<li>Calculate days until expiry</li>
+<li>Create alerts for tokens expiring in <7 days</li>
+<li>Auto-refresh tokens if refresh_token available</li>
+<li>Send Slack notifications for urgent expirations (<2 days)</li>
+</ul>
+<p>#### C. Data Quality Validator (real-time, post-run)</p>
+<strong>Tasks:</strong>
+<ul><li>Validate schema compliance</li>
+<li>Check for null values in required fields</li>
+<li>Detect duplicates</li>
+<li>Flag anomalies (volume spikes/drops)</li>
+<li>Store quality metrics</li>
+</ul>
+<hr>
+
+<h2>🔔 3. Slack Integration</h2>
+
+<h3>Required Slack Bot Setup</h3>
+
+<p>#### Bot Configuration</p>
+<ul><li><strong>Bot name:</strong> MCI Pipeline Agent</li>
+<li><strong>Permissions:</strong></li>
+</ul>  - <code>chat:write</code> - Send messages
+<p>  - <code>files:write</code> - Upload logs/reports</p>
+<p>  - <code>reactions:write</code> - Add reactions to messages</p>
+<p>  - <code>users:read</code> - Get user info</p>
+<ul><li><strong>OAuth scopes:</strong> <code>bot</code>, <code>channels:history</code>, <code>chat:write:bot</code></li>
+</ul>
+<p>#### Daily Summary (8:00 AM)</p>
+<strong>Endpoint:</strong> <code>POST /api/slack/daily-summary</code>
+
+<strong>Payload:</strong>
+<pre><code>{
+<p>  &quot;channel&quot;: &quot;#data-pipeline-health&quot;,</p>
+<p>  &quot;blocks&quot;: [</p>
+<p>    {</p>
+<p>      &quot;type&quot;: &quot;section&quot;,</p>
+<p>      &quot;text&quot;: {</p>
+<p>        &quot;type&quot;: &quot;mrkdwn&quot;,</p>
+<p>        &quot;text&quot;: &quot;*Good Morning! 🌅 Daily Pipeline Health Summary*&quot;</p>
+<p>      }</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;type&quot;: &quot;section&quot;,</p>
+<p>      &quot;fields&quot;: [</p>
+<p>        {&quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;*Health Score:*\n72/100 — Fair&quot;},</p>
+<p>        {&quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: &quot;*Status:*\n🟢 12 healthy   🔴 3 failed   🟡 2 warnings&quot;}</p>
+<p>      ]</p>
+<p>    },</p>
+<p>    {</p>
+<p>      &quot;type&quot;: &quot;actions&quot;,</p>
+<p>      &quot;elements&quot;: [</p>
+<p>        {&quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Full Report&quot;, &quot;action_id&quot;: &quot;full_report&quot;},</p>
+<p>        {&quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Repair All Failed&quot;, &quot;action_id&quot;: &quot;repair_all&quot;}</p>
+<p>      ]</p>
+<p>    }</p>
+<p>  ]</p>
+<p>}</code></pre></p>
+
+<p>#### Critical Alert (real-time)</p>
+<strong>Triggered by:</strong> Pipeline failure event
+
+<strong>Implementation:</strong>
+<pre><code>def send_critical_alert(pipeline, error):
+<p>    slack_client.chat_postMessage(</p>
+<p>        channel=&#x27;#data-pipeline-health&#x27;,</p>
+<p>        blocks=[</p>
+<p>            {</p>
+<p>                &quot;type&quot;: &quot;section&quot;,</p>
+<p>                &quot;text&quot;: {&quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: f&quot;🔴 *{pipeline.name} — FAILED*&quot;}</p>
+<p>            },</p>
+<p>            {</p>
+<p>                &quot;type&quot;: &quot;section&quot;,</p>
+<p>                &quot;fields&quot;: [</p>
+<p>                    {&quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: f&quot;*Workspace:*\n{pipeline.data_space}&quot;},</p>
+<p>                    {&quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: f&quot;*Records:*\n{error.records_affected:,} affected&quot;}</p>
+<p>                ]</p>
+<p>            },</p>
+<p>            {</p>
+<p>                &quot;type&quot;: &quot;section&quot;,</p>
+<p>                &quot;text&quot;: {&quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: f&quot;``<code>{error.code}</code>`<code>\n{error.message}&quot;}</p>
+<p>            },</p>
+<p>            {</p>
+<p>                &quot;type&quot;: &quot;section&quot;,</p>
+<p>                &quot;text&quot;: {&quot;type&quot;: &quot;mrkdwn&quot;, &quot;text&quot;: f&quot;_💡 {generate_ai_suggestion(error.code)}_&quot;}</p>
+<p>            },</p>
+<p>            {</p>
+<p>                &quot;type&quot;: &quot;actions&quot;,</p>
+<p>                &quot;elements&quot;: [</p>
+<p>                    {&quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Auto-Repair&quot;, &quot;action_id&quot;: f&quot;repair_{pipeline.id}&quot;},</p>
+<p>                    {&quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;View Logs&quot;, &quot;action_id&quot;: f&quot;logs_{pipeline.id}&quot;}</p>
+<p>                ]</p>
+<p>            }</p>
+<p>        ]</p>
+<p>    )</code></pre></p>
+
+<p>#### Interactive Actions</p>
+<strong>Endpoint:</strong> </code>POST /api/slack/interactions<code>
+
+<strong>Handler:</strong>
+<pre><code>@app.route(&#x27;/api/slack/interactions&#x27;, methods=[&#x27;POST&#x27;])
+<p>def handle_slack_interaction():</p>
+<p>    payload = json.loads(request.form[&#x27;payload&#x27;])</p>
+<p>    action_id = payload[&#x27;actions&#x27;][0][&#x27;action_id&#x27;]</p>
+    
+<p>    if action_id.startswith(&#x27;repair_&#x27;):</p>
+<p>        pipeline_id = action_id.replace(&#x27;repair_&#x27;, &#x27;&#x27;)</p>
+<p>        queue_auto_repair(pipeline_id)</p>
+<p>        return respond_to_slack(&quot;✅ Repair initiated!&quot;)</p>
+    
+<p>    elif action_id.startswith(&#x27;logs_&#x27;):</p>
+<p>        pipeline_id = action_id.replace(&#x27;logs_&#x27;, &#x27;&#x27;)</p>
+<p>        logs = get_pipeline_logs(pipeline_id)</p>
+<p>        return respond_with_modal(logs)</code></pre></p>
+
+<hr>
+
+<h2>⚙️ 4. Headless Actions (MCP Tools) - API Endpoints</h2>
+
+<h3>Discovery & Inspection</h3>
+
+<p>#### </code>GET /api/mcp/sources<code></p>
+<strong>Purpose:</strong> List all data sources and connectors
+<pre><code>{
+<p>  &quot;sources&quot;: [</p>
+<p>    {&quot;id&quot;: &quot;google-ads&quot;, &quot;name&quot;: &quot;Google Ads&quot;, &quot;type&quot;: &quot;marketing&quot;},</p>
+<p>    {&quot;id&quot;: &quot;meta&quot;, &quot;name&quot;: &quot;Meta Ads&quot;, &quot;type&quot;: &quot;marketing&quot;}</p>
+<p>  ]</p>
+<p>}</code></pre></p>
+
+<p>#### </code>GET /api/mcp/schema/{pipeline_id}<code></p>
+<strong>Purpose:</strong> Return schema for a pipeline
+<pre><code>{
+<p>  &quot;columns&quot;: [</p>
+<p>    {&quot;name&quot;: &quot;campaign_id&quot;, &quot;type&quot;: &quot;string&quot;, &quot;nullable&quot;: false},</p>
+<p>    {&quot;name&quot;: &quot;spend&quot;, &quot;type&quot;: &quot;decimal&quot;, &quot;nullable&quot;: true}</p>
+<p>  ]</p>
+<p>}</code></pre></p>
+
+<p>#### </code>GET /api/mcp/lineage/{pipeline_id}<code></p>
+<strong>Purpose:</strong> Get data lineage (upstream/downstream)
+
+<h3>Health & Quality</h3>
+
+<p>#### </code>GET /api/mcp/connectors<code></p>
+<strong>Purpose:</strong> List all connector types
+
+<p>#### </code>GET /api/mcp/connections<code></p>
+<strong>Purpose:</strong> List configured connections + auth status
+
+<p>#### </code>GET /api/mcp/pipelines<code></p>
+<strong>Purpose:</strong> List all pipelines with config
+
+<p>#### </code>GET /api/mcp/pipeline/{id}/status<code></p>
+<strong>Purpose:</strong> Last 50 runs with pass/fail
+<pre><code>{
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;runs&quot;: [</p>
+<p>    {&quot;date&quot;: &quot;2026-06-17&quot;, &quot;status&quot;: &quot;success&quot;, &quot;records&quot;: 45280},</p>
+<p>    {&quot;date&quot;: &quot;2026-06-16&quot;, &quot;status&quot;: &quot;failed&quot;, &quot;records&quot;: 0, &quot;error&quot;: &quot;TOKEN_EXPIRED&quot;}</p>
+<p>  ],</p>
+<p>  &quot;health_trend&quot;: [95, 97, 98, 99, 0, 0, 0]</p>
+<p>}</code></pre></p>
+
+<p>#### </code>GET /api/mcp/pipeline/{id}/logs<code></p>
+<strong>Purpose:</strong> Detailed logs for a pipeline run
+
+<p>#### </code>GET /api/mcp/pipeline/{id}/failed-rows<code></p>
+<strong>Purpose:</strong> Sample of failed rows + count
+
+<p>#### </code>GET /api/mcp/pipeline/{id}/failed-dates<code></p>
+<strong>Purpose:</strong> List of failed date ranges
+<pre><code>{
+<p>  &quot;failed_dates&quot;: [&quot;2026-06-15&quot;, &quot;2026-06-16&quot;, &quot;2026-06-17&quot;],</p>
+<p>  &quot;total_records_affected&quot;: 142840</p>
+<p>}</code></pre></p>
+
+<p>#### </code>POST /api/mcp/quality-check<code></p>
+<strong>Purpose:</strong> Run data quality validation
+
+<p>#### </code>GET /api/mcp/credentials/{id}/expiry<code></p>
+<strong>Purpose:</strong> Check token expiration
+
+<h3>Manipulation</h3>
+
+<p>#### </code>POST /api/mcp/query<code></p>
+<strong>Purpose:</strong> Query data with filters
+<pre><code>{
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;filters&quot;: {&quot;date&quot;: &quot;2026-06-17&quot;},</p>
+<p>  &quot;limit&quot;: 1000</p>
+<p>}</code></pre></p>
+
+<p>#### </code>POST /api/mcp/upsert<code></p>
+<strong>Purpose:</strong> Update/insert records (with preview)
+
+<p>#### </code>DELETE /api/mcp/records<code></p>
+<strong>Purpose:</strong> Delete records (requires confirmation)
+
+<p>#### </code>POST /api/mcp/import<code> / </code>GET /api/mcp/export<code></p>
+<strong>Purpose:</strong> Import/export CSV data
+
+<h3>Operations</h3>
+
+<p>#### </code>POST /api/mcp/trigger-run<code></p>
+<strong>Purpose:</strong> Manually trigger a pipeline run
+<pre><code>{
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;date_range&quot;: {&quot;start&quot;: &quot;2026-06-15&quot;, &quot;end&quot;: &quot;2026-06-17&quot;}</p>
+<p>}</code></pre></p>
+
+<p>#### </code>POST /api/mcp/retry-run<code></p>
+<strong>Purpose:</strong> Retry failed run with auto-repair
+
+<p>#### </code>POST /api/mcp/reauthenticate<code></p>
+<strong>Purpose:</strong> Initiate OAuth flow
+<pre><code>{
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;redirect_uri&quot;: &quot;https://dashboard.example.com/oauth/callback&quot;</p>
+<p>}</code></pre></p>
+<strong>Returns:</strong>
+<pre><code>{
+<p>  &quot;auth_url&quot;: &quot;https://oauth-provider.com/authorize?client_id=...&quot;,</p>
+<p>  &quot;expires_in&quot;: 600</p>
+<p>}</code></pre></p>
+
+<p>#### </code>POST /api/mcp/backfill<code></p>
+<strong>Purpose:</strong> Queue backfill for date range
+<pre><code>{
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;failed_dates&quot;: [&quot;2026-06-15&quot;, &quot;2026-06-16&quot;, &quot;2026-06-17&quot;],</p>
+<p>  &quot;priority&quot;: &quot;high&quot;</p>
+<p>}</code></pre></p>
+
+<p>#### </code>POST /api/mcp/pause<code> / </code>POST /api/mcp/resume<code></p>
+<strong>Purpose:</strong> Pause/resume a pipeline
+
+<p>#### </code>POST /api/mcp/connection<code></p>
+<strong>Purpose:</strong> Create new data connection
+
+<p>#### </code>POST /api/mcp/pipeline<code></p>
+<strong>Purpose:</strong> Create new pipeline
+
+<h3>Governance</h3>
+
+<p>#### </code>POST /api/mcp/tag<code></p>
+<strong>Purpose:</strong> Tag a dataset
+
+<p>#### </code>GET /api/mcp/audit-log<code></p>
+<strong>Purpose:</strong> Query audit logs
+
+<p>#### </code>GET /api/mcp/retention-policy/{id}<code></p>
+<strong>Purpose:</strong> Get data retention policy
+
+<hr>
+
+<h2>🔧 5. Auto-Repair System</h2>
+
+<h3>Adaptive Rate Limiter</h3>
+<strong>Trigger:</strong> </code>RATE_LIMIT_EXCEEDED<code> error
+
+<strong>Implementation:</strong>
+<pre><code>def handle_rate_limit(pipeline_id, error):
+<p>    # Get current backoff config</p>
+<p>    config = get_pipeline_config(pipeline_id)</p>
+    
+<p>    # Calculate backoff</p>
+<p>    retry_after = parse_retry_after_header(error.headers)</p>
+<p>    backoff = calculate_exponential_backoff(</p>
+<p>        base_delay=config.base_delay,</p>
+<p>        attempt=error.attempt_number,</p>
+<p>        jitter=True</p>
+<p>    )</p>
+    
+<p>    # Update pipeline config</p>
+<p>    update_pipeline_config(pipeline_id, {</p>
+<p>        &#x27;rate_limit_enabled&#x27;: True,</p>
+<p>        &#x27;backoff_strategy&#x27;: &#x27;exponential&#x27;,</p>
+<p>        &#x27;base_delay&#x27;: max(retry_after, backoff)</p>
+<p>    })</p>
+    
+<p>    # Reschedule run</p>
+<p>    schedule_retry(pipeline_id, delay=backoff)</code></pre></p>
+
+<h3>Auto Token Refresh</h3>
+<strong>Trigger:</strong> Token expires in <48 hours
+
+<strong>Implementation:</strong>
+<pre><code>def auto_refresh_token(credential_id):
+<p>    credential = get_credential(credential_id)</p>
+    
+<p>    if not credential.refresh_token:</p>
+<p>        # Cannot auto-refresh, notify user</p>
+<p>        send_manual_auth_required_alert(credential.pipeline_id)</p>
+<p>        return</p>
+    
+<p>    try:</p>
+<p>        # Call OAuth provider</p>
+<p>        new_tokens = oauth_provider.refresh_token(</p>
+<p>            refresh_token=credential.refresh_token,</p>
+<p>            client_id=config.CLIENT_ID,</p>
+<p>            client_secret=config.CLIENT_SECRET</p>
+<p>        )</p>
+        
+<p>        # Update database</p>
+<p>        update_credential(credential_id, {</p>
+<p>            &#x27;access_token&#x27;: new_tokens.access_token,</p>
+<p>            &#x27;refresh_token&#x27;: new_tokens.refresh_token,</p>
+<p>            &#x27;token_expires_at&#x27;: new_tokens.expires_at,</p>
+<p>            &#x27;last_refreshed_at&#x27;: datetime.now()</p>
+<p>        })</p>
+        
+<p>        # Resume pipeline if paused</p>
+<p>        resume_pipeline(credential.pipeline_id)</p>
+        
+<p>    except Exception as e:</p>
+<p>        # Refresh failed, notify user</p>
+<p>        send_manual_auth_required_alert(credential.pipeline_id)</code></pre></p>
+
+<h3>Smart Retry Handler</h3>
+<strong>Trigger:</strong> Transient failures (network timeout, 503, 429)
+
+<strong>Implementation:</strong>
+<pre><code>def smart_retry(pipeline_id, run_id, error):
+<p>    # Check retry eligibility</p>
+<p>    if not is_retryable_error(error.code):</p>
+<p>        return mark_as_failed(run_id)</p>
+    
+<p>    # Get retry history</p>
+<p>    retry_count = get_retry_count(run_id)</p>
+    
+<p>    # Circuit breaker check</p>
+<p>    recent_failures = count_recent_failures(pipeline_id, window_minutes=10)</p>
+<p>    if recent_failures &gt;= 5:</p>
+<p>        # Circuit breaker open</p>
+<p>        pause_pipeline(pipeline_id, duration_minutes=10)</p>
+<p>        send_circuit_breaker_alert(pipeline_id)</p>
+<p>        return</p>
+    
+<p>    # Retry with backoff</p>
+<p>    if retry_count &lt; 3:</p>
+<p>        delay = 2 ** retry_count * 60  # 1min, 2min, 4min</p>
+<p>        schedule_retry(run_id, delay=delay)</p>
+<p>    else:</p>
+<p>        mark_as_failed(run_id)</p>
+<p>        send_failure_alert(pipeline_id, run_id)</code></pre></p>
+
+<hr>
+
+<h2>📊 6. Dashboard Backend APIs</h2>
+
+<h3>Health Dashboard Endpoints</h3>
+
+<p>#### </code>GET /api/dashboard/summary<code></p>
+<strong>Purpose:</strong> Overall health summary
+<pre><code>{
+<p>  &quot;total_pipelines&quot;: 17,</p>
+<p>  &quot;healthy&quot;: 14,</p>
+<p>  &quot;warning&quot;: 0,</p>
+<p>  &quot;critical&quot;: 3,</p>
+<p>  &quot;health_score&quot;: 82,</p>
+<p>  &quot;data_volume_24h&quot;: 2800000,</p>
+<p>  &quot;overall_success_rate&quot;: 98.2,</p>
+<p>  &quot;active_syncs&quot;: 14,</p>
+<p>  &quot;avg_sync_time_minutes&quot;: 12</p>
+<p>}</code></pre></p>
+
+<p>#### </code>GET /api/dashboard/recent-alerts<code></p>
+<strong>Purpose:</strong> Last 3 critical alerts
+<pre><code>{
+<p>  &quot;alerts&quot;: [</p>
+<p>    {</p>
+<p>      &quot;pipeline&quot;: &quot;Google Ads APAC&quot;,</p>
+<p>      &quot;error&quot;: &quot;Token expired&quot;,</p>
+<p>      &quot;records_affected&quot;: 142840,</p>
+<p>      &quot;days_ago&quot;: 3</p>
+<p>    }</p>
+<p>  ]</p>
+<p>}</code></pre></p>
+
+<p>#### </code>GET /api/dashboard/pipelines<code></p>
+<strong>Purpose:</strong> All pipelines with 30-day trends
+<pre><code>{
+<p>  &quot;pipelines&quot;: [</p>
+<p>    {</p>
+<p>      &quot;id&quot;: &quot;uuid&quot;,</p>
+<p>      &quot;name&quot;: &quot;Meta US&quot;,</p>
+<p>      &quot;data_space&quot;: &quot;Marketing-US&quot;,</p>
+<p>      &quot;status&quot;: &quot;healthy&quot;,</p>
+<p>      &quot;records_today&quot;: 45280,</p>
+<p>      &quot;success_rate&quot;: 98.7,</p>
+<p>      &quot;trend_30d&quot;: [95, 97, 98, ...],  // 30 values</p>
+<p>      &quot;last_run&quot;: &quot;2 min ago&quot;,</p>
+<p>      &quot;needs_auth&quot;: false,</p>
+<p>      &quot;error&quot;: null</p>
+<p>    }</p>
+<p>  ]</p>
+<p>}</code></pre></p>
+
+<p>#### </code>POST /api/dashboard/reprocess<code></p>
+<strong>Purpose:</strong> Trigger backfill
+<pre><code>{
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;failed_dates&quot;: [&quot;2026-06-15&quot;, &quot;2026-06-16&quot;],</p>
+<p>  &quot;priority&quot;: &quot;high&quot;</p>
+<p>}</code></pre></p>
+<strong>Returns:</strong>
+<pre><code>{
+<p>  &quot;job_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;status&quot;: &quot;queued&quot;,</p>
+<p>  &quot;estimated_duration_minutes&quot;: 60</p>
+<p>}</code></pre></p>
+
+<p>#### </code>POST /api/dashboard/reauthenticate<code></p>
+<strong>Purpose:</strong> Generate OAuth URL
+<pre><code>{
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;</p>
+<p>}</code></pre></p>
+<strong>Returns:</strong>
+<pre><code>{
+<p>  &quot;auth_url&quot;: &quot;https://...&quot;,</p>
+<p>  &quot;expires_in_seconds&quot;: 600</p>
+<p>}</code></pre></p>
+
+<h3>Volume Chart Data</h3>
+<p>#### </code>GET /api/dashboard/volume-trend<code></p>
+<strong>Purpose:</strong> 7-day volume data
+<pre><code>{
+<p>  &quot;dates&quot;: [&quot;2026-06-11&quot;, &quot;2026-06-12&quot;, ...],</p>
+<p>  &quot;volumes&quot;: [2.4, 2.6, 2.5, 2.7, 2.8, 2.3, 2.8]  // millions</p>
+<p>}</code></pre></p>
+
+<hr>
+
+<h2>🔐 7. Authentication & Security</h2>
+
+<h3>OAuth 2.0 Implementation</h3>
+
+<p>#### Required Components:</p>
+<p>1. <strong>OAuth Provider Integration</strong></p>
+<p>   - Google Ads API OAuth</p>
+<p>   - Meta Marketing API OAuth</p>
+<p>   - LinkedIn API OAuth</p>
+<p>   - TikTok Ads API OAuth</p>
+
+<p>2. <strong>Token Storage</strong></p>
+<p>   - Encrypted at rest (AES-256)</p>
+<p>   - Encrypted in transit (TLS 1.3)</p>
+<p>   - Access via HSM or cloud KMS</p>
+
+<p>3. <strong>OAuth Flow Handler</strong></p>
+<pre><code>@app.route(&#x27;/oauth/callback&#x27;)
+<p>def oauth_callback():</p>
+<p>    code = request.args.get(&#x27;code&#x27;)</p>
+<p>    state = request.args.get(&#x27;state&#x27;)</p>
+    
+<p>    # Verify state (CSRF protection)</p>
+<p>    if not verify_state(state):</p>
+<p>        return &quot;Invalid state&quot;, 403</p>
+    
+<p>    # Exchange code for tokens</p>
+<p>    tokens = oauth_provider.exchange_code(</p>
+<p>        code=code,</p>
+<p>        redirect_uri=config.REDIRECT_URI</p>
+<p>    )</p>
+    
+<p>    # Store encrypted tokens</p>
+<p>    credential_id = create_credential(</p>
+<p>        pipeline_id=decode_state(state)[&#x27;pipeline_id&#x27;],</p>
+<p>        access_token=encrypt(tokens.access_token),</p>
+<p>        refresh_token=encrypt(tokens.refresh_token),</p>
+<p>        expires_at=tokens.expires_at</p>
+<p>    )</p>
+    
+<p>    # Resume pipeline</p>
+<p>    resume_pipeline_after_auth(credential_id)</p>
+    
+<p>    # Notify via Slack</p>
+<p>    send_auth_success_notification(credential_id)</p>
+    
+<p>    return redirect(&#x27;/dashboard&#x27;)</code></pre></p>
+
+<h3>API Authentication</h3>
+<ul><li><strong>JWT tokens</strong> for dashboard API access</li>
+<li><strong>API keys</strong> for MCP tool programmatic access</li>
+<li><strong>Rate limiting</strong> per API key (1000 requests/hour)</li>
+</ul>
+<hr>
+
+<h2>🎯 8. Background Jobs & Schedulers</h2>
+
+<h3>Cron Jobs Required</h3>
+
+<p>| Job Name | Frequency | Purpose |</p>
+<p>|----------|-----------|---------|</p>
+<p>| </code>pipeline_health_monitor<code> | Every 5 min | Check all pipeline statuses |</p>
+<p>| </code>token_expiry_checker<code> | Every 6 hours | Check OAuth token expiration |</p>
+<p>| </code>daily_health_summary<code> | Daily at 8:00 AM | Send Slack summary |</p>
+<p>| </code>weekly_report_generator<code> | Monday at 9:00 AM | Generate weekly report |</p>
+<p>| </code>stale_data_archiver<code> | Daily at 2:00 AM | Archive old data (>365 days) |</p>
+<p>| </code>auto_token_refresher<code> | Every 12 hours | Refresh expiring tokens |</p>
+<p>| </code>quality_check_runner<code> | Every 1 hour | Run data quality checks |</p>
+<p>| </code>deduplicator<code> | Every 1 hour | Remove duplicate records |</p>
+<p>| </code>metrics_aggregator<code> | Every 15 min | Aggregate health metrics |</p>
+
+<h3>Job Queue System</h3>
+<strong>Technology:</strong> Redis + Celery / AWS SQS / RabbitMQ
+
+<strong>Queue Types:</strong>
+<p>1. <strong>High Priority:</strong> Auth failures, critical alerts (process immediately)</p>
+<p>2. <strong>Normal Priority:</strong> Regular backfills, reprocessing</p>
+<p>3. <strong>Low Priority:</strong> Reports, analytics, archiving</p>
+
+<hr>
+
+<h2>📈 9. Metrics & Observability</h2>
+
+<h3>Required Metrics</h3>
+
+<p>#### Application Metrics</p>
+<ul><li>Pipeline run duration (histogram)</li>
+<li>Pipeline success rate (gauge)</li>
+<li>Records processed per second (counter)</li>
+<li>API response time (histogram)</li>
+<li>Error rate by error code (counter)</li>
+<li>Active connections (gauge)</li>
+</ul>
+<p>#### Infrastructure Metrics</p>
+<ul><li>Database connection pool size</li>
+<li>Queue depth by priority</li>
+<li>Memory usage</li>
+<li>CPU usage</li>
+<li>Network I/O</li>
+</ul>
+<p>#### Business Metrics</p>
+<ul><li>Total pipelines by status</li>
+<li>Total records processed (daily)</li>
+<li>Token expiration warnings</li>
+<li>Auto-repair success rate</li>
+<li>Backfill completion time</li>
+</ul>
+<h3>Logging Requirements</h3>
+<strong>Structure:</strong> JSON with structured fields
+
+<pre><code>{
+<p>  &quot;timestamp&quot;: &quot;2026-06-17T13:45:00Z&quot;,</p>
+<p>  &quot;level&quot;: &quot;ERROR&quot;,</p>
+<p>  &quot;pipeline_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;pipeline_name&quot;: &quot;Google Ads APAC&quot;,</p>
+<p>  &quot;run_id&quot;: &quot;uuid&quot;,</p>
+<p>  &quot;error_code&quot;: &quot;TOKEN_EXPIRED&quot;,</p>
+<p>  &quot;error_message&quot;: &quot;OAuth token expired&quot;,</p>
+<p>  &quot;records_processed&quot;: 0,</p>
+<p>  &quot;records_failed&quot;: 142840,</p>
+<p>  &quot;trace_id&quot;: &quot;uuid&quot;</p>
+<p>}</code></pre></p>
+
+<h3>Alerting Rules</h3>
+<p>1. <strong>Critical:</strong> Pipeline down >2 hours → PagerDuty</p>
+<p>2. <strong>Warning:</strong> Success rate <95% for 24h → Slack</p>
+<p>3. <strong>Info:</strong> Token expires in 2 days → Slack</p>
+
+<hr>
+
+<h2>🚀 10. Deployment Architecture</h2>
+
+<h3>Recommended Stack</h3>
+
+<p>#### Frontend</p>
+<ul><li><strong>Technology:</strong> React / Next.js</li>
+<li><strong>Hosting:</strong> Vercel / Cloudflare Pages / S3 + CloudFront</li>
+<li><strong>State Management:</strong> React Query for API caching</li>
+</ul>
+<p>#### Backend</p>
+<ul><li><strong>API:</strong> Node.js (Express) / Python (FastAPI) / Go</li>
+<li><strong>Hosting:</strong> Kubernetes / AWS ECS / Google Cloud Run</li>
+<li><strong>Load Balancer:</strong> AWS ALB / NGINX</li>
+</ul>
+<p>#### Database</p>
+<ul><li><strong>Primary:</strong> PostgreSQL 15+ (RDS / Cloud SQL)</li>
+<li><strong>Cache:</strong> Redis (ElastiCache / Memorystore)</li>
+<li><strong>Time-series:</strong> TimescaleDB extension for trends</li>
+</ul>
+<p>#### Message Queue</p>
+<ul><li><strong>Technology:</strong> Redis (Celery) / AWS SQS / RabbitMQ</li>
+<li><strong>Workers:</strong> Celery workers for background jobs</li>
+</ul>
+<p>#### Storage</p>
+<ul><li><strong>Logs:</strong> S3 / Google Cloud Storage</li>
+<li><strong>Archives:</strong> Glacier / Coldline Storage</li>
+</ul>
+<p>#### Monitoring</p>
+<ul><li><strong>APM:</strong> DataDog / New Relic / Grafana</li>
+<li><strong>Logs:</strong> ELK Stack / Splunk / CloudWatch</li>
+<li><strong>Errors:</strong> Sentry</li>
+</ul>
+<hr>
+
+<h2>📋 11. Development Phases</h2>
+
+<h3>Phase 1: Core Infrastructure (4-6 weeks)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Database schema setup</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>API endpoints (health, status, logs)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>OAuth 2.0 implementation</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Basic Slack integration</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Pipeline health monitor (cron)</label></div>
+
+<h3>Phase 2: Auto-Repair (3-4 weeks)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Rate limiter implementation</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Auto token refresh</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Smart retry handler</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Backfill queue system</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Circuit breaker pattern</label></div>
+
+<h3>Phase 3: Dashboard (2-3 weeks)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Frontend React app</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>30-day trend visualization</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Real-time status updates</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Action buttons (reprocess, re-auth)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Export functionality</label></div>
+
+<h3>Phase 4: Slack Bot (2-3 weeks)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>Daily summary scheduler</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Critical alerts</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Interactive buttons</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Conversational AI (optional)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Weekly reports</label></div>
+
+<h3>Phase 5: MCP Tools (4-6 weeks)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>All 36 tool endpoints</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Discovery APIs</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Manipulation APIs (with preview)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Governance APIs</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>API documentation</label></div>
+
+<h3>Phase 6: Advanced Features (3-4 weeks)</h3>
+<div class="checkbox-item"><input type="checkbox" ><label>AI suggestions engine</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Anomaly detection</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Data quality scoring</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Predictive alerts</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Cost optimization recommendations</label></div>
+
+<hr>
+
+<h2>🔍 12. Testing Requirements</h2>
+
+<h3>Unit Tests</h3>
+<ul><li>All API endpoints</li>
+<li>OAuth flow handlers</li>
+<li>Auto-repair logic</li>
+<li>Retry mechanisms</li>
+<li>Data transformations</li>
+</ul>
+<h3>Integration Tests</h3>
+<ul><li>End-to-end pipeline runs</li>
+<li>Slack notification delivery</li>
+<li>OAuth token refresh</li>
+<li>Backfill process</li>
+<li>Database transactions</li>
+</ul>
+<h3>Load Tests</h3>
+<ul><li>1000 pipelines running concurrently</li>
+<li>10,000 API requests/minute</li>
+<li>Slack webhook rate limits</li>
+<li>Database query performance</li>
+</ul>
+<hr>
+
+<h2>📝 13. Documentation Needed</h2>
+
+<div class="checkbox-item"><input type="checkbox" ><label>API documentation (OpenAPI/Swagger)</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>OAuth setup guide per provider</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Slack bot installation guide</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Database migration scripts</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Runbook for common issues</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Architecture diagrams</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>Deployment guide</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>User manual for dashboard</label></div>
+<div class="checkbox-item"><input type="checkbox" ><label>MCP tools reference (already created!)</label></div>
+
+<hr>
+
+<h2>💰 14. Cost Estimates (Monthly)</h2>
+
+<p>| Service | Estimated Cost |</p>
+<p>|---------|----------------|</p>
+<p>| Database (PostgreSQL RDS) | $200-400 |</p>
+<p>| Caching (Redis) | $50-100 |</p>
+<p>| Message Queue (SQS/RabbitMQ) | $20-50 |</p>
+<p>| Compute (API servers) | $300-600 |</p>
+<p>| Storage (logs, archives) | $50-100 |</p>
+<p>| Monitoring (DataDog/New Relic) | $100-200 |</p>
+<p>| Slack (if using paid features) | $0-100 |</p>
+<p>| <strong>Total</strong> | <strong>$720-1,550/month</strong> |</p>
+
+<hr>
+
+<h2>🎯 Success Metrics</h2>
+
+<p>After implementation, track:</p>
+<ul><li>Pipeline uptime: Target >99.5%</li>
+<li>Auto-repair success rate: Target >90%</li>
+<li>Token refresh automation: Target >95%</li>
+<li>Alert response time: Target <5 minutes</li>
+<li>Dashboard load time: Target <2 seconds</li>
+<li>API p95 latency: Target <200ms</li>
+</ul>
+<hr>
+
+<h2>📦 Quick Start Checklist</h2>
+
+<p>To get started TODAY:</p>
+
+<p>1. <strong>Set up database</strong></p>
+   </code>`<code>bash
+<p>   createdb mcp_health</p>
+<p>   psql mcp_health < schema.sql</p>
+   </code>`<code>
+
+<p>2. <strong>Create Slack bot</strong></p>
+<p>   - Go to api.slack.com/apps</p>
+<p>   - Create new app</p>
+<p>   - Add bot scopes</p>
+<p>   - Install to workspace</p>
+<p>   - Get bot token</p>
+
+<p>3. <strong>Implement first endpoint</strong></p>
+   </code>`<code>python
+<p>   @app.get('/api/dashboard/summary')</p>
+<p>   def get_summary():</p>
+<p>       return {</p>
+<p>           "total_pipelines": count_pipelines(),</p>
+<p>           "healthy": count_by_status('healthy'),</p>
+<p>           "critical": count_by_status('critical')</p>
+<p>       }</p>
+   </code>`<code>
+
+<p>4. <strong>Create first cron job</strong></p>
+   </code>`<code>python
+<p>   @celery.task</p>
+<p>   def monitor_health():</p>
+<p>       pipelines = get_all_pipelines()</p>
+<p>       for p in pipelines:</p>
+<p>           status = calculate_status(p)</p>
+<p>           update_pipeline(p.id, status)</p>
+   </code>`<code>
+
+<p>5. <strong>Send first Slack message</strong></p>
+   </code>`<code>python
+<p>   slack_client.chat_postMessage(</p>
+<p>       channel='#data-pipeline-health',</p>
+<p>       text='MCP Health Bot is online! 🎉'</p>
+<p>   )</p>
+   </code>``
+
+<hr>
+
+<strong>Total Estimated Development Time:</strong> 18-26 weeks (4-6 months)  
+<strong>Team Size:</strong> 2-3 full-stack engineers + 1 DevOps engineer
+
+<strong>Priority Order:</strong>
+<p>1. Core database + APIs (foundational)</p>
+<p>2. Slack integration (high visibility)</p>
+<p>3. Dashboard (user-facing)</p>
+<p>4. Auto-repair (high value)</p>
+<p>5. MCP tools (comprehensive)</p>
+<p>6. Advanced features (nice-to-have)</p>
+
+    </div>
+</body>
+</html>
