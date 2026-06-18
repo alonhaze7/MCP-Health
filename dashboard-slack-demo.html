@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Health Dashboard - Slack Integration Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #032D60;
+            --blue: #0176D3;
+            --blue-lt: #E9F1FB;
+            --green: #2E844A;
+            --green-lt: #EEF4EE;
+            --amber: #C97A00;
+            --amber-lt: #FEF3C7;
+            --red: #BA0517;
+            --red-lt: #FEF1EF;
+            --ink: #181818;
+            --ink-mid: #444;
+            --ink-soft: #706E6B;
+            --ink-faint: #B0ADAB;
+            --bg: #F3F2F2;
+            --surface: #FFFFFF;
+            --border: #E0DEDC;
+            --border-mid: #C9C7C5;
+            --shadow: 0 2px 8px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.05);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.08);
+            --r: 6px;
+            --r-lg: 10px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 13px;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: var(--r);
+            border: none;
+            cursor: pointer;
+            transition: .15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #0165b8;
+        }
+
+        .btn-ghost {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            color: var(--ink-mid);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--border-mid);
+            background: var(--bg);
+        }
+
+        .btn-amber {
+            background: var(--amber);
+            color: #fff;
+        }
+
+        .btn-amber:hover {
+            opacity: .9;
+        }
+
+        .main-content {
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: var(--ink-faint);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Insights Panel */
+        .insights-panel {
+            position: fixed;
+            right: -420px;
+            top: 0;
+            height: 100vh;
+            width: 420px;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .insights-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--r);
+            border: none;
+            background: var(--bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-mid);
+            transition: .15s;
+        }
+
+        .close-btn:hover {
+            background: var(--border);
+        }
+
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+        }
+
+        .insight-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--amber);
+            border-radius: var(--r);
+            padding: 16px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .insight-card:hover {
+            box-shadow: var(--shadow);
+            border-left-color: var(--blue);
+        }
+
+        .insight-card.critical {
+            border-left-color: var(--red);
+            background: var(--red-lt);
+        }
+
+        .insight-card.warning {
+            border-left-color: var(--amber);
+            background: var(--amber-lt);
+        }
+
+        .insight-card.success {
+            border-left-color: var(--green);
+            background: var(--green-lt);
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .insight-icon {
+            font-size: 18px;
+        }
+
+        .insight-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .insight-description {
+            font-size: 12px;
+            color: var(--ink-mid);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .insight-action {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--blue);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Slack Section in Panel */
+        .slack-section {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--ink-faint);
+            margin-bottom: 12px;
+        }
+
+        .slack-preview {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .slack-preview-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--ink-faint);
+            margin-bottom: 8px;
+        }
+
+        .slack-preview-body {
+            font-size: 12px;
+            color: var(--ink-mid);
+            line-height: 1.6;
+        }
+
+        .slack-preview-body strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .slack-mention {
+            color: var(--blue);
+            font-weight: 600;
+        }
+
+        .slack-channel-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .slack-channel-select {
+            flex: 1;
+            height: 32px;
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            background: var(--surface);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: var(--ink);
+            padding: 0 10px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .slack-channel-select:focus {
+            border-color: var(--blue);
+        }
+
+        .btn-slack {
+            background: #4A154B;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 7px 16px;
+            border-radius: var(--r);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity .15s;
+        }
+
+        .btn-slack:hover {
+            opacity: .88;
+        }
+
+        /* Scheduler Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--r-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-helper {
+            font-size: 11px;
+            color: var(--ink-soft);
+            margin-top: 4px;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--r);
+            background: var(--surface);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink-mid);
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .toggle-btn:hover {
+            border-color: var(--blue);
+        }
+
+        .toggle-btn.active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+        }
+
+        .time-picker {
+            display: flex;
+            gap: 8px;
+        }
+
+        .time-input {
+            flex: 1;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            background: var(--surface);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--ink);
+            padding: 0 12px;
+            outline: none;
+        }
+
+        .time-input:focus {
+            border-color: var(--blue);
+        }
+
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: var(--r);
+        }
+
+        .switch-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: var(--border-mid);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .switch.on {
+            background: var(--green);
+        }
+
+        .switch-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: .2s;
+        }
+
+        .switch.on .switch-thumb {
+            left: 23px;
+        }
+
+        .schedule-preview {
+            background: var(--blue-lt);
+            border: 1px solid var(--blue);
+            border-radius: var(--r);
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .schedule-preview-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .schedule-preview-text {
+            font-size: 12px;
+            color: var(--ink-mid);
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--green);
+            color: white;
+            padding: 14px 20px;
+            border-radius: var(--r);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-text {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Overlay for panel */
+        .panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 999;
+        }
+
+        .panel-overlay.open {
+            display: block;
+        }
+
+        .demo-badge {
+            position: fixed;
+            top: 80px;
+            left: 24px;
+            background: var(--amber);
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--r);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: var(--shadow);
+            z-index: 500;
+        }
+
+        @media (max-width: 768px) {
+            .insights-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Badge -->
+    <div class="demo-badge">
+        🎨 Demo - UI Preview
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div>
+                <div class="header-title">📊 Pipeline Health Dashboard</div>
+                <div class="header-subtitle">with Slack Integration & Scheduling</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-ghost" onclick="openScheduler()">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <rect x="2" y="3" width="10" height="9" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M2 5h10M5 1v2M9 1v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                Schedule Reports
+            </button>
+            <button class="btn btn-primary" onclick="openInsights()">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M7 4v3M7 10v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                View Insights
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">72</div>
+                <div class="metric-label">Health Score</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">14</div>
+                <div class="metric-label">Healthy Pipelines</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">3</div>
+                <div class="metric-label">Need Attention</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">98.2%</div>
+                <div class="metric-label">Success Rate</div>
+            </div>
+        </div>
+
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 40px; text-align: center;">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" style="margin-bottom: 16px;">
+                <circle cx="32" cy="32" r="30" fill="var(--blue-lt)"/>
+                <path d="M32 20v12M32 44v2" stroke="var(--blue)" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <h2 style="font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px;">
+                Try the New Features
+            </h2>
+            <p style="font-size: 13px; color: var(--ink-soft); margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                Click <strong>"View Insights"</strong> to see AI-generated highlights and send them to Slack,
+                or <strong>"Schedule Reports"</strong> to configure automatic daily/weekly updates.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="btn btn-primary" onclick="openInsights()">View Insights →</button>
+                <button class="btn btn-ghost" onclick="openScheduler()">Configure Schedule →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Overlay -->
+    <div class="panel-overlay" id="panelOverlay" onclick="closeInsights()"></div>
+
+    <!-- Insights Panel -->
+    <div class="insights-panel" id="insightsPanel">
+        <div class="panel-header">
+            <div class="panel-title">💡 Key Insights & Actions</div>
+            <button class="close-btn" onclick="closeInsights()">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="panel-body">
+            <!-- Critical Insights -->
+            <div class="insight-card critical" onclick="selectInsight(this, 'critical')">
+                <div class="insight-header">
+                    <span class="insight-icon">🔴</span>
+                    <span class="insight-title">3 Pipelines Failed</span>
+                </div>
+                <div class="insight-description">
+                    <strong>Google Ads APAC</strong>, <strong>Meta EMEA</strong>, and <strong>LinkedIn US</strong>
+                    have been down for 2-4 days. 245,680 records affected (all recoverable via backfill).
+                </div>
+                <div class="insight-action">
+                    Click to send alert to Slack →
+                </div>
+            </div>
+
+            <div class="insight-card critical" onclick="selectInsight(this, 'token')">
+                <div class="insight-header">
+                    <span class="insight-icon">🔐</span>
+                    <span class="insight-title">OAuth Token Expired</span>
+                </div>
+                <div class="insight-description">
+                    <strong>Google Ads APAC</strong> authentication expired 3 days ago.
+                    No data synced since June 14. Re-authentication required immediately.
+                </div>
+                <div class="insight-action">
+                    Click to send auth reminder →
+                </div>
+            </div>
+
+            <div class="insight-card warning" onclick="selectInsight(this, 'warning')">
+                <div class="insight-header">
+                    <span class="insight-icon">🟡</span>
+                    <span class="insight-title">2 Tokens Expiring Soon</span>
+                </div>
+                <div class="insight-description">
+                    <strong>TikTok US</strong> and <strong>Google Ads US</strong> tokens expire in 2-5 days.
+                    Schedule re-authentication before they expire to prevent disruption.
+                </div>
+                <div class="insight-action">
+                    Click to send warning →
+                </div>
+            </div>
+
+            <div class="insight-card success" onclick="selectInsight(this, 'success')">
+                <div class="insight-header">
+                    <span class="insight-icon">🟢</span>
+                    <span class="insight-title">12 Pipelines Healthy</span>
+                </div>
+                <div class="insight-description">
+                    <strong>Meta US</strong>, <strong>Twitter US</strong>, and 10 others running at 96.2-100% success rate.
+                    All data fresh within last 10 minutes.
+                </div>
+                <div class="insight-action">
+                    Click to share success →
+                </div>
+            </div>
+
+            <div class="insight-card" onclick="selectInsight(this, 'trend')">
+                <div class="insight-header">
+                    <span class="insight-icon">📈</span>
+                    <span class="insight-title">Trend: Improving Performance</span>
+                </div>
+                <div class="insight-description">
+                    Average success rate increased from 96.1% to 98.2% over the past 7 days.
+                    Auto-repair successfully handled 8 transient failures.
+                </div>
+                <div class="insight-action">
+                    Click to share trend →
+                </div>
+            </div>
+
+            <!-- Slack Section -->
+            <div class="slack-section">
+                <div class="section-label">Send to Slack</div>
+
+                <div class="slack-preview">
+                    <div class="slack-preview-label">Message Preview</div>
+                    <div class="slack-preview-body" id="slackPreview">
+                        Select an insight above to preview the Slack message
+                    </div>
+                </div>
+
+                <div class="slack-channel-row">
+                    <select class="slack-channel-select" id="slackChannel">
+                        <option value="data-pipeline-health">#data-pipeline-health</option>
+                        <option value="engineering">#engineering</option>
+                        <option value="data-ops">#data-ops</option>
+                        <option value="alerts">#alerts</option>
+                    </select>
+                </div>
+
+                <button class="btn-slack" onclick="sendToSlack()" id="sendBtn" disabled>
+                    <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+                        <path d="M5.5 1.5a1.5 1.5 0 0 0 0 3h1.5v-1.5a1.5 1.5 0 0 0-1.5-1.5zM5.5 6.5H2a1.5 1.5 0 0 0 0 3h3.5v-3zM8.5 12.5a1.5 1.5 0 0 0 0-3H7v1.5a1.5 1.5 0 0 0 1.5 1.5zM8.5 7.5H12a1.5 1.5 0 0 0 0-3H8.5v3zM7 1.5V5h1.5a1.5 1.5 0 0 0 0-3H7zM5.5 9H7v3H5.5a1.5 1.5 0 0 0 0-3z" fill="white"/>
+                    </svg>
+                    Send to Slack
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scheduler Modal -->
+    <div class="modal-overlay" id="schedulerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">⏰ Schedule Automatic Reports</div>
+                <div class="modal-subtitle">Configure daily or weekly health summaries to Slack</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Frequency</label>
+                    <div class="toggle-group">
+                        <div class="toggle-btn active" onclick="setFrequency('daily')">Daily</div>
+                        <div class="toggle-btn" onclick="setFrequency('weekly')">Weekly</div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="weekdaySelect" style="display: none;">
+                    <label class="form-label">Day of Week</label>
+                    <select class="time-input">
+                        <option>Monday</option>
+                        <option>Tuesday</option>
+                        <option>Wednesday</option>
+                        <option>Thursday</option>
+                        <option>Friday</option>
+                        <option>Saturday</option>
+                        <option>Sunday</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Time</label>
+                    <div class="time-picker">
+                        <input type="time" class="time-input" value="08:00">
+                        <select class="time-input" style="max-width: 100px;">
+                            <option>PST</option>
+                            <option>EST</option>
+                            <option>UTC</option>
+                        </select>
+                    </div>
+                    <div class="form-helper">When should the report be sent?</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Slack Channel</label>
+                    <select class="time-input">
+                        <option>#data-pipeline-health</option>
+                        <option>#engineering</option>
+                        <option>#data-ops</option>
+                        <option>#alerts</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="switch-row">
+                        <div class="switch-label">Enable Automatic Reports</div>
+                        <div class="switch on" onclick="toggleSwitch(this)">
+                            <div class="switch-thumb"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-preview">
+                    <div class="schedule-preview-title">📅 Schedule Preview</div>
+                    <div class="schedule-preview-text">
+                        <strong>Daily at 8:00 AM PST</strong><br>
+                        Sends to <strong>#data-pipeline-health</strong><br><br>
+                        Message will include:
+                        <ul style="margin: 8px 0 0 20px; line-height: 1.8;">
+                            <li>Health score (0-100)</li>
+                            <li>Pipeline status breakdown</li>
+                            <li>Critical failures</li>
+                            <li>Token expiration warnings</li>
+                            <li>Recommended actions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeScheduler()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSchedule()">Save Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" fill="white" fill-opacity=".2"/>
+            <path d="M6 9l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="toast-text" id="toastText">Message sent successfully!</span>
+    </div>
+
+    <script>
+        let selectedInsightType = null;
+
+        const insightMessages = {
+            critical: '🔴 <strong>Critical Alert: 3 Pipelines Failed</strong>\n\n' +
+                     '<strong>Google Ads APAC</strong>, <strong>Meta EMEA</strong>, and <strong>LinkedIn US</strong> have been down for 2-4 days.\n\n' +
+                     '📊 Impact: 245,680 records affected\n' +
+                     '✅ Recovery: All data recoverable via backfill\n\n' +
+                     'Action required: <span class="slack-mention">@data-team</span>',
+
+            token: '🔐 <strong>Auth Required: Google Ads APAC</strong>\n\n' +
+                   'OAuth token expired 3 days ago. No data synced since June 14.\n\n' +
+                   '🔄 Re-authenticate now to resume data flow\n' +
+                   '⏱️ Estimated backfill time: 1 hour\n\n' +
+                   'Action: <a href="#">Click to re-authenticate →</a>',
+
+            warning: '🟡 <strong>Token Expiry Warning</strong>\n\n' +
+                    '<strong>TikTok US</strong> expires in 2 days\n' +
+                    '<strong>Google Ads US</strong> expires in 5 days\n\n' +
+                    '⏰ Re-authenticate before expiration to prevent downtime',
+
+            success: '🟢 <strong>Health Update: 12 Pipelines Healthy</strong>\n\n' +
+                    'All systems operating normally:\n' +
+                    '• <strong>Meta US</strong>: 98.7% success\n' +
+                    '• <strong>Twitter US</strong>: 96.8% success\n' +
+                    '• +10 more pipelines running smoothly\n\n' +
+                    '✨ All data fresh within last 10 minutes',
+
+            trend: '📈 <strong>Performance Improving</strong>\n\n' +
+                  'Success rate: 96.1% → 98.2% (last 7 days)\n' +
+                  'Auto-repair handled: 8 transient failures\n\n' +
+                  '🎯 Keep up the great work!'
+        };
+
+        function openInsights() {
+            document.getElementById('insightsPanel').classList.add('open');
+            document.getElementById('panelOverlay').classList.add('open');
+        }
+
+        function closeInsights() {
+            document.getElementById('insightsPanel').classList.remove('open');
+            document.getElementById('panelOverlay').classList.remove('open');
+        }
+
+        function selectInsight(card, type) {
+            // Remove selection from all cards
+            document.querySelectorAll('.insight-card').forEach(c => {
+                c.style.outline = 'none';
+            });
+
+            // Highlight selected card
+            card.style.outline = '2px solid var(--blue)';
+
+            // Update preview
+            selectedInsightType = type;
+            document.getElementById('slackPreview').innerHTML = insightMessages[type];
+            document.getElementById('sendBtn').disabled = false;
+        }
+
+        function sendToSlack() {
+            const channel = document.getElementById('slackChannel').value;
+            showToast(`Message sent to #${channel}!`);
+
+            // Reset after sending
+            setTimeout(() => {
+                document.querySelectorAll('.insight-card').forEach(c => {
+                    c.style.outline = 'none';
+                });
+                document.getElementById('slackPreview').innerHTML = 'Select an insight above to preview the Slack message';
+                document.getElementById('sendBtn').disabled = true;
+                selectedInsightType = null;
+            }, 500);
+        }
+
+        function openScheduler() {
+            document.getElementById('schedulerModal').classList.add('open');
+        }
+
+        function closeScheduler() {
+            document.getElementById('schedulerModal').classList.remove('open');
+        }
+
+        function setFrequency(freq) {
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (freq === 'weekly') {
+                document.getElementById('weekdaySelect').style.display = 'block';
+            } else {
+                document.getElementById('weekdaySelect').style.display = 'none';
+            }
+        }
+
+        function toggleSwitch(sw) {
+            sw.classList.toggle('on');
+        }
+
+        function saveSchedule() {
+            showToast('Schedule saved successfully!');
+            closeScheduler();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('schedulerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeScheduler();
+            }
+        });
+    </script>
+</body>
+</html>
