@@ -734,6 +734,199 @@
             cursor: not-allowed;
         }
 
+        /* Scheduler Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-subtitle {
+            font-size: 0.75rem;
+            color: #718096;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-helper {
+            font-size: 0.6875rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.625rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4a5568;
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .toggle-btn:hover {
+            border-color: #667eea;
+        }
+
+        .toggle-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: #fff;
+        }
+
+        .time-picker {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .time-input {
+            flex: 1;
+            height: 36px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            font-size: 0.8125rem;
+            color: #1a202c;
+            padding: 0 0.75rem;
+            outline: none;
+        }
+
+        .time-input:focus {
+            border-color: #667eea;
+        }
+
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: #f7fafc;
+            border-radius: 6px;
+        }
+
+        .switch-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #cbd5e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .switch.on {
+            background: #48bb78;
+        }
+
+        .switch-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: .2s;
+        }
+
+        .switch.on .switch-thumb {
+            left: 23px;
+        }
+
+        .schedule-preview {
+            background: #e6f3ff;
+            border: 1px solid #667eea;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .schedule-preview-title {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .schedule-preview-text {
+            font-size: 0.75rem;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
         /* Toast Notification */
         .toast {
             position: fixed;
@@ -1354,8 +1547,138 @@
         }
 
         function openScheduler() {
-            alert('Scheduler feature coming in next update!\n\nYou will be able to configure:\n• Daily/Weekly reports\n• Automatic Slack messages\n• Email reports\n• Custom schedules');
+            document.getElementById('schedulerModal').classList.add('open');
+            updateSchedulePreview();
         }
+
+        function closeScheduler() {
+            document.getElementById('schedulerModal').classList.remove('open');
+        }
+
+        function setFrequency(freq) {
+            // Update button states
+            document.getElementById('dailyBtn').classList.remove('active');
+            document.getElementById('weeklyBtn').classList.remove('active');
+
+            if (freq === 'daily') {
+                document.getElementById('dailyBtn').classList.add('active');
+                document.getElementById('weekdaySelect').style.display = 'none';
+            } else {
+                document.getElementById('weeklyBtn').classList.add('active');
+                document.getElementById('weekdaySelect').style.display = 'block';
+            }
+
+            updateSchedulePreview();
+        }
+
+        function toggleSwitch(sw) {
+            sw.classList.toggle('on');
+        }
+
+        function updateSchedulePreview() {
+            const frequency = document.getElementById('dailyBtn').classList.contains('active') ? 'daily' : 'weekly';
+            const time = document.getElementById('timeInput').value;
+            const timezone = document.getElementById('timezoneInput').value;
+            const channel = document.getElementById('scheduleSlackChannel').value;
+            const weekday = document.getElementById('weekdayInput').value;
+
+            let frequencyText = '';
+            if (frequency === 'daily') {
+                frequencyText = `Daily at ${time} ${timezone}`;
+            } else {
+                frequencyText = `Every ${weekday} at ${time} ${timezone}`;
+            }
+
+            document.getElementById('previewFrequency').textContent = frequencyText;
+            document.getElementById('previewChannel').textContent = `#${channel}`;
+        }
+
+        function saveSchedule() {
+            const frequency = document.getElementById('dailyBtn').classList.contains('active') ? 'daily' : 'weekly';
+            const time = document.getElementById('timeInput').value;
+            const timezone = document.getElementById('timezoneInput').value;
+            const channel = document.getElementById('scheduleSlackChannel').value;
+            const email = document.getElementById('scheduleEmailInput').value;
+            const enabled = document.getElementById('scheduleSwitch').classList.contains('on');
+            const weekday = document.getElementById('weekdayInput').value;
+
+            if (!enabled) {
+                showToast('⚠ Schedule is disabled. Enable it to save.', 'warning');
+                return;
+            }
+
+            let scheduleText = frequency === 'daily'
+                ? `Daily at ${time} ${timezone}`
+                : `Every ${weekday} at ${time} ${timezone}`;
+
+            let message = `✓ Schedule saved!\n\n${scheduleText}\nChannel: #${channel}`;
+            if (email) {
+                message += `\nEmail: ${email}`;
+            }
+
+            showToast('✓ Schedule saved successfully!');
+            closeScheduler();
+
+            // Store in localStorage for persistence
+            const scheduleConfig = {
+                frequency,
+                time,
+                timezone,
+                channel,
+                email,
+                enabled,
+                weekday
+            };
+            localStorage.setItem('pipelineHealthSchedule', JSON.stringify(scheduleConfig));
+        }
+
+        // Load saved schedule on page load
+        function loadSavedSchedule() {
+            const saved = localStorage.getItem('pipelineHealthSchedule');
+            if (saved) {
+                try {
+                    const config = JSON.parse(saved);
+                    document.getElementById('timeInput').value = config.time || '08:00';
+                    document.getElementById('timezoneInput').value = config.timezone || 'PST';
+                    document.getElementById('scheduleSlackChannel').value = config.channel || 'data-pipeline-health';
+                    if (config.email) {
+                        document.getElementById('scheduleEmailInput').value = config.email;
+                    }
+                    if (config.weekday) {
+                        document.getElementById('weekdayInput').value = config.weekday;
+                    }
+                    if (config.frequency === 'weekly') {
+                        setFrequency('weekly');
+                    }
+                    if (!config.enabled) {
+                        document.getElementById('scheduleSwitch').classList.remove('on');
+                    }
+                } catch (e) {
+                    console.error('Failed to load saved schedule:', e);
+                }
+            }
+        }
+
+        // Update preview when inputs change
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedSchedule();
+
+            const inputs = ['timeInput', 'timezoneInput', 'scheduleSlackChannel', 'weekdayInput'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', updateSchedulePreview);
+                }
+            });
+        });
+
+        // Close modal on overlay click
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('schedulerModal');
+            if (e.target === modal) {
+                closeScheduler();
+            }
+        });
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -1512,6 +1835,105 @@
                     </svg>
                     Send Email Report
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scheduler Modal -->
+    <div class="modal-overlay" id="schedulerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">⏰ Schedule Automatic Reports</div>
+                <div class="modal-subtitle">Configure daily or weekly health summaries</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Frequency</label>
+                    <div class="toggle-group">
+                        <div class="toggle-btn active" id="dailyBtn" onclick="setFrequency('daily')">Daily</div>
+                        <div class="toggle-btn" id="weeklyBtn" onclick="setFrequency('weekly')">Weekly</div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="weekdaySelect" style="display: none;">
+                    <label class="form-label">Day of Week</label>
+                    <select class="time-input" id="weekdayInput">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Time</label>
+                    <div class="time-picker">
+                        <input type="time" class="time-input" id="timeInput" value="08:00">
+                        <select class="time-input" id="timezoneInput" style="max-width: 100px;">
+                            <option value="PST">PST</option>
+                            <option value="EST">EST</option>
+                            <option value="CST">CST</option>
+                            <option value="MST">MST</option>
+                            <option value="UTC">UTC</option>
+                        </select>
+                    </div>
+                    <div class="form-helper">When should the report be sent?</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Slack Channel</label>
+                    <select class="time-input" id="scheduleSlackChannel">
+                        <option value="data-pipeline-health">#data-pipeline-health</option>
+                        <option value="engineering">#engineering</option>
+                        <option value="data-ops">#data-ops</option>
+                        <option value="alerts">#alerts</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Recipients (optional)</label>
+                    <input
+                        type="email"
+                        class="time-input"
+                        id="scheduleEmailInput"
+                        placeholder="team@example.com (separate multiple with commas)"
+                    />
+                    <div class="form-helper">Leave empty to send Slack-only</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="switch-row">
+                        <div class="switch-label">Enable Automatic Reports</div>
+                        <div class="switch on" id="scheduleSwitch" onclick="toggleSwitch(this)">
+                            <div class="switch-thumb"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-preview">
+                    <div class="schedule-preview-title">📅 Schedule Preview</div>
+                    <div class="schedule-preview-text" id="schedulePreviewText">
+                        <strong id="previewFrequency">Daily at 8:00 AM PST</strong><br>
+                        Sends to <strong id="previewChannel">#data-pipeline-health</strong><br><br>
+                        Message will include:
+                        <ul style="margin: 8px 0 0 20px; line-height: 1.8;">
+                            <li>Health score (0-100)</li>
+                            <li>Pipeline status breakdown</li>
+                            <li>Critical failures & token warnings</li>
+                            <li>30-day trend analysis</li>
+                            <li>Recommended actions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeScheduler()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSchedule()">Save Schedule</button>
             </div>
         </div>
     </div>
