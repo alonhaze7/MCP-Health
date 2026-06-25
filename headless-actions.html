@@ -221,21 +221,23 @@
 
     <div class="container">
         <div class="intro">
-            <h2>🤖 All 36 MCP Tools for Pipeline Management</h2>
+            <h2>🤖 All 60 MCP Tools for Pipeline Management</h2>
             <p>
                 Complete reference of all automated tools available for data pipeline management. These headless actions run in the background
                 to discover, inspect, manipulate, transform, operate, and govern your data pipelines without human intervention.
+                Includes 24 new tools from the <strong>Project Codey Steel Threads</strong> — Marketing Intelligence capabilities for multi-connector ingestion,
+                semantic model deployment, paid media optimization, embedded analytics, and campaign attribution.
             </p>
         </div>
 
         <!-- Stats Overview -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value">36</div>
+                <div class="stat-value">60</div>
                 <div class="stat-label">Total Tools</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">6</div>
+                <div class="stat-value">11</div>
                 <div class="stat-label">Categories</div>
             </div>
             <div class="stat-card">
@@ -243,8 +245,8 @@
                 <div class="stat-label">Health & Quality</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">4</div>
-                <div class="stat-label">Discovery Tools</div>
+                <div class="stat-value">24</div>
+                <div class="stat-label">Steel Thread Tools</div>
             </div>
         </div>
 
@@ -610,13 +612,300 @@
             </div>
         </div>
 
+        <!-- Steel Threads Divider -->
+        <div style="background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: white; padding: 2rem; border-radius: 12px; margin: 3rem 0 2rem;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">🚀 Project Codey — Steel Thread Tools</h2>
+            <p style="font-size: 1rem; opacity: 0.95; line-height: 1.7;">
+                24 new tools from the Marketing Intelligence Steel Threads initiative. These power end-to-end automation for
+                multi-connector ingestion, semantic model deployment, paid media optimization, embedded analytics, and campaign attribution.
+                <span style="background: rgba(255,255,255,0.15); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">Target: Live by Dreamforce</span>
+            </p>
+        </div>
+
+        <!-- ST#1: Multi-Connector Ingestion & Harmonization -->
+        <div class="section">
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">🔌</span>
+                <h2 class="section-title">Ingestion & Harmonization</h2>
+                <span class="section-count">6 tools</span>
+                <span style="background: #ebf8ff; color: #2b6cb0; padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">ST #1</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">authorize_connector</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Authorize Data Cloud connectors for ad platforms (Google Ads, Meta, TikTok) via OAuth flow.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">create_data_stream</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Create a data stream per source with MI semantic-model smart defaults (raw DLO ingestion).
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">create_batch_transform</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Create a Batch Data Transform star-schema (DLO → DMO mapping) for harmonization.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">create_flow_orchestration</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Build a Salesforce Flow orchestration to schedule and chain pipeline steps.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">trigger_first_run</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Trigger first ingestion run and confirm harmonized cross-channel data lands in the MI model.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">validate_harmonization</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Verify cross-channel data integrity — checks schema alignment, record counts, and field mapping.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ST#2: Semantic Model Deployment -->
+        <div class="section">
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">🧠</span>
+                <h2 class="section-title">Semantic Model</h2>
+                <span class="section-count">5 tools</span>
+                <span style="background: #ebf8ff; color: #2b6cb0; padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">ST #2</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">list_dataspaces</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        List available dataspaces and recommend a target for model deployment.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">deploy_semantic_model</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Deploy the MI Semantic Model (Ad, Conversion, Website Engagement facts + Campaign, Media Buy, Creative, Ad, Keyword entities).
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">join_base_model</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Join the deployed semantic model to the existing MI base model at the Campaign DMO.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">poll_deploy_status</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Poll deployment status until model is live and queryable.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">explain_model</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Return a human-readable explanation of the deployed model — entities, relationships, and query capabilities.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ST#3: Paid Media Optimization -->
+        <div class="section">
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">📈</span>
+                <h2 class="section-title">Paid Media Optimization</h2>
+                <span class="section-count">5 tools</span>
+                <span style="background: #ebf8ff; color: #2b6cb0; padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">ST #3</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">configure_pmo_agent</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Enable and configure the Paid Media Optimization sub-agent with CPA/ROAS thresholds.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_ad_performance</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Scan paid media against performance thresholds — surfaces underperforming ads across Meta, Google, LinkedIn.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">recommend_ads_to_pause</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Generate pause recommendations for ads breaching CPA/ROAS thresholds with supporting data.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">pause_ads</div>
+                        <span class="tool-badge" style="background: #fff5e6; color: #c05621;">⚠ write</span>
+                    </div>
+                    <div class="tool-description">
+                        Pause breaching ads on Meta, Google Ads, and LinkedIn after human-in-the-loop approval.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">dry_run_scan</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Execute a dry-run scan — surfaces pause recommendations without making changes. Safe to run anytime.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ST#4: Embedded Analytics -->
+        <div class="section">
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">📊</span>
+                <h2 class="section-title">Embedded Analytics</h2>
+                <span class="section-count">4 tools</span>
+                <span style="background: #ebf8ff; color: #2b6cb0; padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">ST #4</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">deploy_analytics_dashboard</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Deploy MI OOTB analytics dashboards (Paid Media Overview, Campaign Performance, Attribution) on Tableau Next.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">query_semantic_layer</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Query the semantic layer in natural language — returns structured JSON for downstream use.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">embed_on_lightning_page</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Embed a campaign-performance dashboard directly on a Lightning record page with deep-link to Tableau Next.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">get_analytics_collection</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        List available analytics collections and their configuration (MktIntelAnalyticsCollection).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ST#5: Campaign Attribution -->
+        <div class="section">
+            <div class="section-header">
+                <span style="font-size: 1.75rem;">🎯</span>
+                <h2 class="section-title">Campaign Attribution</h2>
+                <span class="section-count">4 tools</span>
+                <span style="background: #ebf8ff; color: #2b6cb0; padding: 0.25rem 0.65rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem;">ST #5</span>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">enable_attribution_model</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Enable Campaign Attribution with a configurable model (first-touch / last-touch).
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">link_conversion_signals</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Connect web conversions and CRM leads to campaigns via the Conversion Engagement DMO.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">validate_attribution_linkage</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Validate that conversion signals are correctly linked — checks join integrity and attribution coverage.
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-name">query_attributed_conversions</div>
+                        <span class="tool-badge badge-added">steel thread</span>
+                    </div>
+                    <div class="tool-description">
+                        Return attributed conversions and revenue by campaign via the MI Campaign Attribution Connect API.
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Note about usage -->
         <div style="background: #fff5e6; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 8px; margin-top: 2rem;">
             <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">⚠️ Tool Usage Guidelines</div>
             <div style="color: #92400e; font-size: 0.9rem; line-height: 1.6;">
                 <strong>Read/write separation:</strong> Tools marked with <span style="background: #fff5e6; padding: 0.15rem 0.4rem; border-radius: 4px;">⚠</span> modify data.
                 Always preview changes before applying. Tools with <span style="background: #c6f6d5; color: #22543d; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600;">added</span>
-                are newly available in this release.
+                are newly available in this release. Tools marked <span style="background: #c6f6d5; color: #22543d; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600;">steel thread</span>
+                are from the Project Codey initiative — target live by Dreamforce.
             </div>
         </div>
     </div>
